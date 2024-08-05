@@ -21,6 +21,10 @@ const config = {
     },
     extend: {
       colors: {
+        yogo: {
+          primary: "#00ffff",
+          dark: "#39aaaa",
+        },
         green: {
           500: "#24AE7C",
           600: "#0D2A1F",

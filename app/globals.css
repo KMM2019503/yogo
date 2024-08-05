@@ -28,6 +28,10 @@
 
 @layer utilities {
   /* ===== UTILITIES */
+  .flex-p-center {
+    @apply flex justify-center items-center;
+  }
+
   .sidebar {
     @apply remove-scrollbar w-full max-w-72 flex-col overflow-auto bg-black-800 px-7 py-10;
   }

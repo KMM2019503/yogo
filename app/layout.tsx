@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "YoGo",
   description: "Your personal healthcare website",
   icons: {
-    icon: "/yogo-logo.png",
+    icon: "/yogo-logo.jpeg",
   },
 };
 
