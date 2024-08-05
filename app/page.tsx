@@ -7,7 +7,7 @@ export default function Home() {
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[496px]">
-          <div className="flex items-center gap-5 mb-12">
+          <div className="flex items-center gap-5 mb-4">
             <Image
               src={"/yogo-logo.jpeg"}
               alt="logo"
@@ -22,7 +22,7 @@ export default function Home() {
 
           <PatientForm />
 
-          <div className="text-14-regular mt-20 flex justify-between">
+          <div className="text-14-regular mt-20 flex justify-between md:gap-y-4">
             <p>© 2024 YoGo -X- Piniaz</p>
 
             <Link href={"/?admin=true"} className="text-red-700">
