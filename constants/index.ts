@@ -1,30 +1,33 @@
-export const GenderOptions = ["Male", "Female", "Other"];
+export const GenderOptions = ["male", "female", "other", "gay"];
 
-// export const PatientFormDefaultValues = {
-//   firstName: "",
-//   lastName: "",
-//   email: "",
-//   phone: "",
-//   birthDate: new Date(Date.now()),
-//   gender: "Male" as GenderOp,
-//   address: "",
-//   occupation: "",
-//   emergencyContactName: "",
-//   emergencyContactNumber: "",
-//   primaryPhysician: "",
-//   insuranceProvider: "",
-//   insurancePolicyNumber: "",
-//   allergies: "",
-//   currentMedication: "",
-//   familyMedicalHistory: "",
-//   pastMedicalHistory: "",
-//   identificationType: "Birth Certificate",
-//   identificationNumber: "",
-//   identificationDocument: [],
-//   treatmentConsent: false,
-//   disclosureConsent: false,
-//   privacyConsent: false,
-// };
+export const PatientFormDefaultValues = {
+  name: "",
+  email: "",
+  phone: "",
+  dob: new Date(Date.now()),
+  gender: "female",
+  address: "",
+  occupation: "",
+  emergencyContactName: "",
+  emergencyContactNumber: "",
+  insuranceProvider: "",
+  insurancePolicyNumber: "",
+  allergies: "",
+  currentMedication: "",
+  indentificationType: "Birth Certificate",
+  indentificationNumber: "",
+  indentificationDocument: [],
+  treatmentConsent: false,
+  disclosureConsent: false,
+  privacyConsent: false,
+};
+
+export const GenderType = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "other", label: "Other" },
+  { value: "gay", label: "Gay" },
+];
 
 export const IdentificationTypes = [
   "Birth Certificate",

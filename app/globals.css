@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+.react-datepicker__year-dropdown
+  .react-datepicker__year-option:first-child::before {
+  content: "\25B2";
+  position: absolute;
+  top: 5%;
+  left: 45%;
+  margin: auto;
+}
+
+.react-datepicker__year-dropdown::after {
+  content: "\25BC";
+  display: block;
+  position: relative;
+  bottom: 15%;
+}
+
 /* ========================================== TAILWIND STYLES */
 @layer base {
   /* Remove scrollbar */
@@ -187,7 +203,7 @@
 
   /* =====  SHADCN OVERRIDES */
   .shad-primary-btn {
-    @apply bg-green-500 text-white !important;
+    @apply bg-yogo-dark text-white !important;
   }
 
   .shad-danger-btn {

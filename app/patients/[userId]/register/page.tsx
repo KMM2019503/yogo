@@ -1,8 +1,10 @@
-import PatientForm from "@/components/form/PatientForm";
+import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+import RegisterForm from "@/components/form/RegisterForm";
+import { getUser } from "@/actions/patient.action";
 
-export default function Home() {
+const RegisterPage = async ({ params: { userId } }: SearchParamProps) => {
+  const user = await getUser(userId);
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container my-auto ">
@@ -15,29 +17,17 @@ export default function Home() {
               height={1000}
               className="h-16 w-fit rounded-full"
             />
-            {/* <h2 className="font-mono text-3xl md:text-4xl lg:text-6xl font-bold ">
-              YoGo
-            </h2> */}
           </div>
 
-          <PatientForm />
+          <RegisterForm user={user} />
 
           <div className="text-14-regular mt-20 flex justify-between md:gap-y-4">
             <p>© 2024 YoGo -X- Piniaz</p>
-
-            <Link href={"/?admin=true"} className="text-red-700">
-              Admin
-            </Link>
           </div>
         </div>
       </section>
-      <Image
-        src={"/images/patientFormBg.jpg"}
-        alt="patient form background"
-        width={1000}
-        height={1000}
-        className="hidden md:block md:max-w-[40%] h-full lg:max-w-[50%] object-cover rounded-tl-2xl rounded-bl-2xl shadow-lg "
-      />
     </div>
   );
-}
+};
+
+export default RegisterPage;

@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // React Hook Form and zod
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,30 +20,42 @@ import { Input } from "../ui/input";
 
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input/input";
-import flags from "react-phone-number-input/flags";
-
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-  email: z.string().email(),
-  phonenumber: z.string().min(8),
-});
+import SubmitButton from "../ui/SubmitButton";
+import { UserFromValidation } from "@/lib/validation";
+import { createUser } from "@/actions/patient.action";
 
 const PatientForm = () => {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof UserFromValidation>>({
+    resolver: zodResolver(UserFromValidation),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
-      phonenumber: "",
+      phone: "",
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit({
+    name,
+    email,
+    phone,
+  }: z.infer<typeof UserFromValidation>) {
+    setLoading(true);
+
+    try {
+      const userData = { name, email, phone };
+      console.log(userData);
+      const user = await createUser(userData);
+      if (user) {
+        router.push(`/patients/${user.$id}/register`);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <Form {...form}>
@@ -51,9 +63,10 @@ const PatientForm = () => {
         <section className="space-y-4">
           <p className="text-dark-700">Schedule your first appointment</p>
         </section>
+        {/* User Name */}
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Full Name</FormLabel>
@@ -82,7 +95,7 @@ const PatientForm = () => {
         {/* Phone Number */}
         <FormField
           control={form.control}
-          name="phonenumber"
+          name="phone"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
@@ -95,16 +108,14 @@ const PatientForm = () => {
                   withCountryCallingCode
                   value={field.value as string}
                   onChange={field.onChange}
-                  className="input-phone w-full"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" variant={"outline"} className="w-full">
-          Submit
-        </Button>
+        <SubmitButton isLoading={loading}>Get Started</SubmitButton>
       </form>
     </Form>
   );
