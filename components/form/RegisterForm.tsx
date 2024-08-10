@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,6 +32,7 @@ import {
   IdentificationTypes,
   PatientFormDefaultValues,
 } from "@/constants";
+
 import { Textarea } from "../ui/textarea";
 import { Separator } from "../ui/separator";
 
@@ -41,12 +41,13 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { FileUploader } from "../FileUploader";
 import { Checkbox } from "../ui/checkbox";
+import { registerPatient } from "@/actions/patient.action";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
@@ -54,24 +55,48 @@ const RegisterForm = ({ user }: { user: User }) => {
 
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
-    // defaultValues: PatientFormDefaultValues,
+    defaultValues: {
+      ...PatientFormDefaultValues,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+    },
   });
 
-  async function onSubmit({
-    name,
-    email,
-    phone,
-    gender,
-  }: z.infer<typeof PatientFormValidation>) {
+  async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
     setLoading(true);
+    let formData;
+    if (
+      values.indentificationDocument &&
+      values.indentificationDocument?.length > 0
+    ) {
+      const blobFile = new Blob([values.indentificationDocument[0]], {
+        type: values.indentificationDocument[0].type,
+      });
 
+      formData = new FormData();
+      formData.append("blobFile", blobFile);
+      formData.append("fileName", values.indentificationDocument[0].name);
+    }
     try {
-      const userData = { name, email, phone, gender };
-      console.log(userData);
-      //   const user = await createUser(userData);
-      //   if (user) {
-      //     router.push(`/patients/${user.$id}/register`);
-      //   }
+      const patientData: RegisterUserParams = {
+        ...values,
+        userId: user.$id,
+        dob: new Date(values.dob),
+        indentificationDocument: values.indentificationDocument
+          ? formData
+          : undefined,
+        allergies: values.allergies ?? undefined,
+        currentMedication: values.currentMedication ?? undefined,
+        indentificationType: values.indentificationType ?? undefined,
+        indentificationNumber: values.indentificationNumber ?? undefined,
+      };
+
+      const patient = await registerPatient(patientData);
+
+      if (patient) {
+        router.push(`/patients/${user.$id}/new-appointment`);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -81,6 +106,11 @@ const RegisterForm = ({ user }: { user: User }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
+        {/* Header */}
+        <h2 className="text-2xl md:text-3xl font-bold text-yogo-primary">
+          Hello, this is Register Form
+        </h2>
+
         {/* Personal Information */}
         <section className="space-y-10">
           <h2 className="sub-header">Personal Information</h2>
@@ -93,14 +123,14 @@ const RegisterForm = ({ user }: { user: User }) => {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="Mical Jordan" {...field} />
+                <Input placeholder="Mical Jordan" {...field} disabled={true} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex flex-col md:flex-row md:justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 md:gap-y-0 md:gap-x-5">
           {/* Email */}
           <FormField
             control={form.control}
@@ -109,7 +139,11 @@ const RegisterForm = ({ user }: { user: User }) => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="micaljordan@gmail.com" {...field} />
+                  <Input
+                    placeholder="micaljordan@gmail.com"
+                    {...field}
+                    disabled={true}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -125,6 +159,7 @@ const RegisterForm = ({ user }: { user: User }) => {
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl>
                   <PhoneInput
+                    disabled={true}
                     defaultCountry="MM"
                     country="MM"
                     placeholder="+95 998 273 4891"
@@ -132,7 +167,7 @@ const RegisterForm = ({ user }: { user: User }) => {
                     withCountryCallingCode
                     value={field.value as string}
                     onChange={field.onChange}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-10 w-full rounded-md border border-input bg-dark-300 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </FormControl>
                 <FormMessage />
@@ -175,18 +210,19 @@ const RegisterForm = ({ user }: { user: User }) => {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex items-center justify-between"
+                  className="grid grid-cols-2 md:grid-cols-4"
                 >
                   {GenderType.map((gender) => (
                     <FormItem
                       key={gender.value}
-                      className="flex items-center space-x-3 space-y-0 border border-input px-3 md:px-4 py-2 rounded-md"
+                      className="flex items-center justify-around border rounded-md px-3 md:px-4 py-2 "
                     >
                       <FormControl>
                         <RadioGroupItem value={gender.value} />
                       </FormControl>
-                      <FormLabel className="font-normal cursor-pointer">
+                      <FormLabel className="font-normal cursor-pointer flex items-center">
                         {gender.label}
+                        <gender.icon className="size-6" />
                       </FormLabel>
                     </FormItem>
                   ))}
@@ -197,7 +233,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           )}
         />
 
-        <div className="flex flex-col md:flex-row md:justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 md:gap-y-0 md:gap-x-5">
           {/* Occupation */}
           <FormField
             control={form.control}
@@ -222,7 +258,6 @@ const RegisterForm = ({ user }: { user: User }) => {
                 <FormControl>
                   <Textarea
                     {...field}
-                    className="md:w-[213px]"
                     placeholder="Eg : Yangon, Sule, 31 street, no (616), 4th floor"
                     id="address"
                   />
@@ -233,7 +268,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           />
         </div>
 
-        <div className="flex flex-col md:flex-row md:justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 md:gap-y-0 md:gap-x-5">
           {/* Emergency Contact Name */}
           <FormField
             control={form.control}
@@ -267,7 +302,7 @@ const RegisterForm = ({ user }: { user: User }) => {
                     withCountryCallingCode
                     value={field.value as string}
                     onChange={field.onChange}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-10 w-full rounded-md border border-input bg-dark-300 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </FormControl>
                 <FormMessage />
@@ -283,7 +318,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           <h2 className="sub-header">Medical Information</h2>
         </section>
 
-        <div className="flex flex-col md:flex-row md:justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 md:gap-y-0 md:gap-x-5">
           {/* Insurance Provider Name */}
           <FormField
             control={form.control}
@@ -438,10 +473,9 @@ const RegisterForm = ({ user }: { user: User }) => {
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Treatment Consent</FormLabel>
-                <FormDescription>
+                <FormLabel>
                   I consent to receive treatment for my health condition.
-                </FormDescription>
+                </FormLabel>
               </div>
             </FormItem>
           )}
@@ -459,11 +493,10 @@ const RegisterForm = ({ user }: { user: User }) => {
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Disclosure Consent</FormLabel>
-                <FormDescription>
+                <FormLabel>
                   I consent to the use disclosure of my health information for
                   treatment purposes.
-                </FormDescription>
+                </FormLabel>
               </div>
             </FormItem>
           )}
@@ -481,11 +514,10 @@ const RegisterForm = ({ user }: { user: User }) => {
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Privacy Consent</FormLabel>
-                <FormDescription>
+                <FormLabel>
                   I acknowledge that I have reviewed and agree to privacy
                   policy.
-                </FormDescription>
+                </FormLabel>
               </div>
             </FormItem>
           )}

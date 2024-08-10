@@ -1,3 +1,7 @@
+import { CgGenderFemale, CgGenderMale } from "react-icons/cg";
+import { TbGenderAgender } from "react-icons/tb";
+import { BsGenderAmbiguous } from "react-icons/bs";
+
 export const GenderOptions = ["male", "female", "other", "gay"];
 
 export const PatientFormDefaultValues = {
@@ -5,7 +9,7 @@ export const PatientFormDefaultValues = {
   email: "",
   phone: "",
   dob: new Date(Date.now()),
-  gender: "female",
+  gender: "male" as Gender,
   address: "",
   occupation: "",
   emergencyContactName: "",
@@ -23,10 +27,10 @@ export const PatientFormDefaultValues = {
 };
 
 export const GenderType = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "other", label: "Other" },
-  { value: "gay", label: "Gay" },
+  { value: "male", label: "Male", icon: CgGenderMale },
+  { value: "female", label: "Female", icon: CgGenderFemale },
+  { value: "other", label: "Other", icon: TbGenderAgender },
+  { value: "gay", label: "Gay", icon: BsGenderAmbiguous },
 ];
 
 export const IdentificationTypes = [

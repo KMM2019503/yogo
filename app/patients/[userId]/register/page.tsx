@@ -8,7 +8,7 @@ const RegisterPage = async ({ params: { userId } }: SearchParamProps) => {
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container my-auto ">
-        <div className="sub-container max-w-[496px]">
+        <div className="sub-container md:max-w-[896px]">
           <div className="flex flex-col justify-center items-center gap-y-1 mb-10">
             <Image
               src={"/yogo-logo.jpeg"}
@@ -21,7 +21,7 @@ const RegisterPage = async ({ params: { userId } }: SearchParamProps) => {
 
           <RegisterForm user={user} />
 
-          <div className="text-14-regular mt-20 flex justify-between md:gap-y-4">
+          <div className="text-14-regular mt-10 flex justify-center md:gap-y-4">
             <p>© 2024 YoGo -X- Piniaz</p>
           </div>
         </div>
