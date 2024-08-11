@@ -1,0 +1,230 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
+// React Hook Form and zod
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import "react-phone-number-input/style.css";
+
+import SubmitButton from "../ui/SubmitButton";
+import { AppointmentFormValidation } from "@/lib/validation";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Doctors } from "@/constants";
+import { Textarea } from "../ui/textarea";
+
+interface AppointmentFormProps {
+  userId: string;
+  patientId: string;
+  type: "create" | "cancle";
+}
+
+const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof AppointmentFormValidation>>({
+    resolver: zodResolver(AppointmentFormValidation),
+    defaultValues: {
+      doctor: "",
+      schedule: new Date(),
+      note: "",
+      reason: "",
+      cancellationReason: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
+    setLoading(true);
+    console.log(values);
+
+    try {
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-y-2 flex-1"
+      >
+        <section className="space-y-4">
+          <p className="text-dark-700">Request your first appointment in 10s</p>
+        </section>
+
+        {type === "create" && (
+          <>
+            <FormField
+              control={form.control}
+              name="doctor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Doctor</FormLabel>
+                  <FormMessage />
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      // defaultValue={field.value}
+                    >
+                      <SelectTrigger className="w-full ">
+                        <SelectValue placeholder="Select a doctor" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-dark-300 ">
+                        <SelectGroup>
+                          {Doctors.map((item, i) => (
+                            <SelectItem key={i} value={item.name}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="reason">Reason</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Eg : anual health checkup, blood test, general checkup"
+                      id="reason"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="notes">Notes</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Eg : I don't live here, but I need help with my medication"
+                      id="notes"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="reason">Reason</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Eg : anual health checkup, blood test, general checkup"
+                      id="reason"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="schedule"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-y-2">
+                  <FormLabel>Appointment Date & Time</FormLabel>
+                  <FormControl>
+                    <DatePicker
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      selected={field.value}
+                      onChange={(date) => {
+                        console.log(date);
+                        field.onChange(date);
+                      }}
+                      dateFormat={"MM/dd/yyyy - h:mm aa"}
+                      placeholderText="Date & Time"
+                      showTimeSelect
+                      showTimeInput
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
+
+        {type === "cancle" && (
+          <>
+            <FormField
+              control={form.control}
+              name="cancellationReason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="cancellationReason">
+                    Cancellation Reason
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Eg : My doctor didn't show up, I don't need this appointment anymore"
+                      id="cancellationReason"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
+
+        <SubmitButton
+          isLoading={loading}
+          className={`${
+            type !== "create" ? "bg-red-700" : "bg-yogo-dark"
+          } mt-2`}
+        >
+          {type === "create" ? "Request New Appointment" : "Cancel Appointment"}
+        </SubmitButton>
+      </form>
+    </Form>
+  );
+};
+
+export default AppointmentForm;

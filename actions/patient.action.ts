@@ -36,6 +36,19 @@ export const getUser = async (userId: string) => {
   }
 };
 
+export const getPatient = async (userId: string) => {
+  try {
+    const patient = await database.listDocuments(
+      process.env.NEXT_PUBLIC_DATABASE_KEY!,
+      process.env.NEXT_PUBLIC_PATIENT_Collection_ID!,
+      [sdk.Query.equal("userId", userId)]
+    );
+    return parseStringify(patient.documents[0]);
+  } catch (error) {
+    console.log("🚀 ~ getPatient ~ error:", error);
+  }
+};
+
 export const registerPatient = async ({
   indentificationDocument,
   ...patient
