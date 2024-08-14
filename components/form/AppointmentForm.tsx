@@ -34,11 +34,12 @@ import {
 } from "../ui/select";
 import { Doctors } from "@/constants";
 import { Textarea } from "../ui/textarea";
+import { createNewAppointment } from "@/actions/appointment.action";
 
 interface AppointmentFormProps {
   userId: string;
   patientId: string;
-  type: "create" | "cancle";
+  type: "create" | "cancle" | "schedule";
 }
 
 const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
@@ -58,11 +59,39 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
 
   async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
     setLoading(true);
-    console.log(values);
+
+    let status;
+    switch (type) {
+      case "schedule":
+        status = "scheduled";
+        break;
+
+      case "cancle":
+        status = "cancelled";
+        break;
+
+      default:
+        status = "pending";
+        break;
+    }
 
     try {
+      if (type === "create" && patientId) {
+        if (!values.schedule) {
+        }
+        const appointmentData = {
+          userId,
+          patient: patientId,
+          doctor: values.doctor,
+          schedule: new Date(values.schedule),
+          reason: values.reason,
+          note: values.note,
+          status: status as Status,
+        };
+        const appointment = await createNewAppointment(appointmentData);
+      }
     } catch (error) {
-      console.log(error);
+      console.log(`Error in creating appointment : ${error}`);
     } finally {
       setLoading(false);
     }
@@ -138,24 +167,6 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
                       {...field}
                       placeholder="Eg : I don't live here, but I need help with my medication"
                       id="notes"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="reason"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="reason">Reason</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Eg : anual health checkup, blood test, general checkup"
-                      id="reason"
                     />
                   </FormControl>
                   <FormMessage />

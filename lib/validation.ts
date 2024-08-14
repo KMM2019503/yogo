@@ -18,7 +18,7 @@ export const AppointmentFormValidation = z.object({
     .min(2, "Reason must be at least 2 characters")
     .max(500, "Reason must be at most 500 characters"),
   note: z.string().optional(),
-  schedule: z.coerce.date().optional(),
+  schedule: z.coerce.date(),
   cancellationReason: z.string().optional(),
 });
 

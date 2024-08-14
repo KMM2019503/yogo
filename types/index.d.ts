@@ -40,7 +40,7 @@ declare interface RegisterUserParams extends CreateUserParams {
 declare type CreateAppointmentParams = {
   userId: string;
   patient: string;
-  primaryPhysician: string;
+  doctor: string;
   reason: string;
   schedule: Date;
   status: Status;
