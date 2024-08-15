@@ -20,7 +20,7 @@ import {
 import "react-phone-number-input/style.css";
 
 import SubmitButton from "../ui/SubmitButton";
-import { AppointmentFormValidation } from "@/lib/validation";
+import { getAppointmentSchema } from "@/lib/validation";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -46,6 +46,8 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  const AppointmentFormValidation = getAppointmentSchema(type);
+
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
@@ -63,11 +65,11 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
     let status;
     switch (type) {
       case "schedule":
-        status = "scheduled";
+        status = "schedule";
         break;
 
       case "cancle":
-        status = "cancelled";
+        status = "cancel";
         break;
 
       default:
@@ -77,18 +79,22 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
 
     try {
       if (type === "create" && patientId) {
-        if (!values.schedule) {
-        }
         const appointmentData = {
           userId,
           patient: patientId,
           doctor: values.doctor,
           schedule: new Date(values.schedule),
-          reason: values.reason,
+          reason: values.reason!,
           note: values.note,
           status: status as Status,
         };
         const appointment = await createNewAppointment(appointmentData);
+        if (appointment) {
+          form.reset();
+          router.push(
+            `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
+          );
+        }
       }
     } catch (error) {
       console.log(`Error in creating appointment : ${error}`);
