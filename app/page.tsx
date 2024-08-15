@@ -1,10 +1,14 @@
 import PatientForm from "@/components/form/PatientForm";
+import PasskeyAlert from "@/components/PasskeyAlert";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+export default function Home({ searchParams }: SearchParamProps) {
+  const isAdmin = searchParams.isAdmin === "true";
+
   return (
     <div className="flex h-screen max-h-screen">
+      {isAdmin && <PasskeyAlert />}
       <section className="remove-scrollbar container my-auto ">
         <div className="sub-container max-w-[496px]">
           <div className="flex flex-col justify-center items-center gap-y-1 mb-10">
@@ -25,7 +29,7 @@ export default function Home() {
           <div className="text-14-regular mt-20 flex justify-between md:gap-y-4">
             <p>© 2024 YoGo -X- Piniaz</p>
 
-            <Link href={"/?admin=true"} className="text-red-700">
+            <Link href={"/?isAdmin=true"} className="text-red-700">
               Admin
             </Link>
           </div>
