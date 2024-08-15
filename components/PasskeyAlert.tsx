@@ -48,7 +48,7 @@ export function PasskeyAlert() {
       }
     } else {
     }
-  }, [accessCode]);
+  }, [accessCode, pathName, router]);
 
   const onClose = () => {
     setShowDialog(false);

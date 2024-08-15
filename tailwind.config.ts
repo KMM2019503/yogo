@@ -24,6 +24,7 @@ const config = {
         yogo: {
           primary: "#00ffff",
           dark: "#39aaaa",
+          bgDark: "#222831",
         },
         green: {
           500: "#24AE7C",
