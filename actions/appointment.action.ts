@@ -18,6 +18,7 @@ export const getAppointment = async (id: string) => {
 };
 
 export const createNewAppointment = async (data: CreateAppointmentParams) => {
+  console.log("🚀 ~ createNewAppointment ~ data:", data);
   try {
     // appointment createion
     const newAppointment = await database.createDocument(
@@ -39,5 +40,26 @@ export const createNewAppointment = async (data: CreateAppointmentParams) => {
     return parseStringify(newAppointment);
   } catch (error) {
     console.log("🚀 ~ Error in createAppointment:", error);
+  }
+};
+
+export const getAllAppointments = async (filter: string) => {
+  try {
+    // const queries = filter !== "all" ? [sdk.Query.equal("status", filter)] : [];
+
+    const appointments = await database.listDocuments(
+      process.env.NEXT_PUBLIC_DATABASE_KEY!,
+      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      [sdk.Query.orderDesc("$createdAt")]
+    );
+
+    console.log(
+      "🚀 ~ getAllAppointments ~ appointments:",
+      appointments.documents
+    );
+
+    return parseStringify(appointments.documents);
+  } catch (error) {
+    console.log("🚀 ~ getAllAppointments ~ error:", error);
   }
 };
