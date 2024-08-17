@@ -1,6 +1,7 @@
 "use server";
 import { database } from "@/lib/appwrite.config";
 import { parseStringify } from "@/lib/utils";
+import { Appointment } from "@/types/appwrite.types";
 import * as sdk from "node-appwrite";
 
 export const getAppointment = async (id: string) => {
@@ -53,12 +54,37 @@ export const getAllAppointments = async (filter: string) => {
       [sdk.Query.orderDesc("$createdAt")]
     );
 
-    console.log(
-      "🚀 ~ getAllAppointments ~ appointments:",
-      appointments.documents
-    );
+    const initialCounts = {
+      scheduledCount: 0,
+      pendingCount: 0,
+      cancelledCount: 0,
+    };
 
-    return parseStringify(appointments.documents);
+    const counts = (appointments.documents as Appointment[]).reduce(
+      (acc, appointment) => {
+        switch (appointment.status) {
+          case "schedule":
+            acc.scheduledCount++;
+            break;
+          case "pending":
+            acc.pendingCount++;
+            break;
+          case "cancel":
+            acc.cancelledCount++;
+            break;
+        }
+        return acc;
+      },
+      initialCounts
+    );
+    const data = {
+      totalCount: appointments.total,
+      ...counts,
+      documents: appointments.documents,
+    };
+    console.log("🚀 ~ getAllAppointments ~ data:", data);
+
+    return parseStringify(data);
   } catch (error) {
     console.log("🚀 ~ getAllAppointments ~ error:", error);
   }

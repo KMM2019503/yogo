@@ -2,9 +2,18 @@ import { formatDateTime } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 import { ColumnDef } from "@tanstack/react-table";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+
 import { FaCalendarCheck } from "react-icons/fa";
 import { MdOutlinePendingActions } from "react-icons/md";
 import { MdOutlineCancel } from "react-icons/md";
+import { CiMenuKebab } from "react-icons/ci";
 
 export const columns: ColumnDef<Appointment>[] = [
   {
@@ -44,6 +53,25 @@ export const columns: ColumnDef<Appointment>[] = [
   {
     accessorKey: "doctor",
     header: "Doctor",
+  },
+  {
+    header: "Action",
+    cell: ({ row }) => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <CiMenuKebab className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-dark-200">
+            <DropdownMenuItem onClick={() => {}}>Schedule</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {}}>Cancel</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 
   // {
