@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // React Hook Form and zod
@@ -35,14 +35,23 @@ import {
 import { Doctors } from "@/constants";
 import { Textarea } from "../ui/textarea";
 import { createNewAppointment } from "@/actions/appointment.action";
+import { Appointment } from "@/types/appwrite.types";
 
 interface AppointmentFormProps {
   userId: string;
   patientId: string;
-  type: "create" | "cancle" | "schedule";
+  type: "create" | "cancel" | "schedule";
+  appointment?: Appointment;
+  setOpen?: (open: boolean) => void;
 }
 
-const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
+const AppointmentForm = ({
+  userId,
+  patientId,
+  type,
+  appointment,
+  setOpen,
+}: AppointmentFormProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -51,11 +60,13 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      doctor: "",
-      schedule: new Date(),
-      note: "",
-      reason: "",
-      cancellationReason: "",
+      doctor: appointment ? appointment?.doctor : "",
+      schedule: appointment
+        ? new Date(appointment?.schedule!)
+        : new Date(Date.now()),
+      reason: appointment ? appointment.reason : "",
+      note: appointment?.note || "",
+      cancellationReason: appointment?.cancellationReason || "",
     },
   });
 
@@ -68,7 +79,7 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
         status = "schedule";
         break;
 
-      case "cancle":
+      case "cancel":
         status = "cancel";
         break;
 
@@ -95,6 +106,19 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
             `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
           );
         }
+      } else {
+        const cancelAppointment = {
+          userId,
+          appointmentId: appointment?.$id,
+          appointment: {
+            doctor: values?.doctor,
+            schedule: new Date(values?.schedule),
+            reason: values.reason!,
+            note: values.note,
+            cancellationReason: values?.cancellationReason,
+            status: "cancel",
+          },
+        };
       }
     } catch (error) {
       console.log(`Error in creating appointment : ${error}`);
@@ -102,18 +126,41 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
       setLoading(false);
     }
   }
+
+  let buttonText;
+  switch (type) {
+    case "cancel":
+      buttonText = "Cancel";
+      break;
+    case "schedule":
+      buttonText = "Schedule";
+      break;
+    default:
+      buttonText = "Submit";
+  }
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-y-2 flex-1"
       >
-        <section className="space-y-4">
-          <p className="text-dark-700">Request your first appointment in 10s</p>
-        </section>
-
+        {type === "schedule" && (
+          <>
+            <section className="space-y-4">
+              <p className="text-dark-700">
+                Are you sure want to comfirm this appointment?
+              </p>
+            </section>
+          </>
+        )}
         {type === "create" && (
           <>
+            <section className="space-y-4">
+              <p className="text-dark-700">
+                Request your first appointment in 10s
+              </p>
+            </section>
             <FormField
               control={form.control}
               name="doctor"
@@ -207,7 +254,7 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
           </>
         )}
 
-        {type === "cancle" && (
+        {type === "cancel" && (
           <>
             <FormField
               control={form.control}
@@ -220,6 +267,7 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
                   <FormControl>
                     <Textarea
                       {...field}
+                      className="mt-5"
                       placeholder="Eg : My doctor didn't show up, I don't need this appointment anymore"
                       id="cancellationReason"
                     />
@@ -234,10 +282,14 @@ const AppointmentForm = ({ userId, patientId, type }: AppointmentFormProps) => {
         <SubmitButton
           isLoading={loading}
           className={`${
-            type !== "create" ? "bg-red-700" : "bg-yogo-dark"
+            type === "create"
+              ? " bg-yogo-dark"
+              : type === "schedule"
+              ? "bg-green-500"
+              : "bg-red-700"
           } mt-2`}
         >
-          {type === "create" ? "Request New Appointment" : "Cancel Appointment"}
+          {buttonText}
         </SubmitButton>
       </form>
     </Form>
