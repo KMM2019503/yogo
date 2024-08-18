@@ -1,7 +1,9 @@
 "use server";
+
 import { database } from "@/lib/appwrite.config";
 import { parseStringify } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
+import { revalidatePath } from "next/cache";
 import * as sdk from "node-appwrite";
 
 export const getAppointment = async (id: string) => {
@@ -44,6 +46,35 @@ export const createNewAppointment = async (data: CreateAppointmentParams) => {
   }
 };
 
+export const handleUpdateAppointment = async (
+  updateAppointment: UpdateAppointmentParams
+) => {
+  const { appointment } = updateAppointment;
+
+  try {
+    // update appointment
+    const response = await database.updateDocument(
+      process.env.NEXT_PUBLIC_DATABASE_KEY!,
+      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      updateAppointment.appointmentId,
+      {
+        userId: appointment.userId,
+        patient: appointment.patient.$id,
+        schedule: appointment.schedule,
+        reason: appointment.reason,
+        note: appointment.note,
+        status: appointment.status,
+        doctor: appointment.doctor,
+        cancellationReason: appointment.cancellationReason,
+      }
+    );
+    revalidatePath("/admin");
+    return parseStringify(response);
+  } catch (error) {
+    console.log("🚀 ~ Error in updateAppointment ->:", error);
+  }
+};
+
 export const getAllAppointments = async (filter: string) => {
   try {
     // const queries = filter !== "all" ? [sdk.Query.equal("status", filter)] : [];
@@ -82,7 +113,6 @@ export const getAllAppointments = async (filter: string) => {
       ...counts,
       documents: appointments.documents,
     };
-    console.log("🚀 ~ getAllAppointments ~ data:", data);
 
     return parseStringify(data);
   } catch (error) {

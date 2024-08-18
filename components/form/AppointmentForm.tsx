@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 // React Hook Form and zod
@@ -34,8 +34,13 @@ import {
 } from "../ui/select";
 import { Doctors } from "@/constants";
 import { Textarea } from "../ui/textarea";
-import { createNewAppointment } from "@/actions/appointment.action";
+import {
+  createNewAppointment,
+  handleUpdateAppointment,
+} from "@/actions/appointment.action";
 import { Appointment } from "@/types/appwrite.types";
+import toast from "react-hot-toast";
+import { Button } from "../ui/button";
 
 interface AppointmentFormProps {
   userId: string;
@@ -101,24 +106,37 @@ const AppointmentForm = ({
         };
         const appointment = await createNewAppointment(appointmentData);
         if (appointment) {
+          toast.success("appointment submited successfully");
           form.reset();
           router.push(
             `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
           );
         }
       } else {
-        const cancelAppointment = {
+        const updateAppointment = {
           userId,
-          appointmentId: appointment?.$id,
+          appointmentId: appointment?.$id || "",
           appointment: {
             doctor: values?.doctor,
             schedule: new Date(values?.schedule),
+            patient: patientId,
             reason: values.reason!,
             note: values.note,
             cancellationReason: values?.cancellationReason,
-            status: "cancel",
+            status: status as Status,
           },
+          type,
         };
+
+        const response = await handleUpdateAppointment(updateAppointment);
+
+        if (response) {
+          let successMessage =
+            type === "schedule" ? "Comfirmed" : "Cancelled Successfully";
+          toast.success(`appointment ${successMessage}`);
+          setOpen && setOpen(false);
+          form.reset();
+        }
       }
     } catch (error) {
       console.log(`Error in creating appointment : ${error}`);
@@ -130,10 +148,10 @@ const AppointmentForm = ({
   let buttonText;
   switch (type) {
     case "cancel":
-      buttonText = "Cancel";
+      buttonText = "Cancel Appointment Confirm";
       break;
     case "schedule":
-      buttonText = "Schedule";
+      buttonText = "Confirm Appointment";
       break;
     default:
       buttonText = "Submit";
@@ -154,13 +172,17 @@ const AppointmentForm = ({
             </section>
           </>
         )}
-        {type === "create" && (
+        {type !== "cancel" && (
           <>
-            <section className="space-y-4">
-              <p className="text-dark-700">
-                Request your first appointment in 10s
-              </p>
-            </section>
+            {type === "create" && (
+              <>
+                <section className="space-y-4">
+                  <p className="text-dark-700">
+                    Request your first appointment in 10s
+                  </p>
+                </section>
+              </>
+            )}
             <FormField
               control={form.control}
               name="doctor"
@@ -170,8 +192,9 @@ const AppointmentForm = ({
                   <FormMessage />
                   <FormControl>
                     <Select
+                      disabled={type !== "create"}
                       onValueChange={field.onChange}
-                      // defaultValue={field.value}
+                      defaultValue={field.value}
                     >
                       <SelectTrigger className="w-full ">
                         <SelectValue placeholder="Select a doctor" />
@@ -192,6 +215,7 @@ const AppointmentForm = ({
             />
 
             <FormField
+              disabled={type !== "create"}
               control={form.control}
               name="reason"
               render={({ field }) => (
@@ -210,6 +234,7 @@ const AppointmentForm = ({
             />
 
             <FormField
+              disabled={type !== "create"}
               control={form.control}
               name="note"
               render={({ field }) => (
@@ -235,6 +260,7 @@ const AppointmentForm = ({
                   <FormLabel>Appointment Date & Time</FormLabel>
                   <FormControl>
                     <DatePicker
+                      disabled={type !== "create"}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       selected={field.value}
                       onChange={(date) => {

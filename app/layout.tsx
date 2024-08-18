@@ -3,6 +3,7 @@ import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { cn } from "@/lib/utils";
+import { Toaster } from "react-hot-toast";
 
 const UbuntuFont = Ubuntu({
   subsets: ["latin"],
@@ -39,6 +40,21 @@ export default function RootLayout({
           // disableTransitionOnChange
         >
           {children}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              success: {
+                style: {
+                  background: "white",
+                },
+              },
+              error: {
+                style: {
+                  background: "red",
+                },
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
