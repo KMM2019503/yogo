@@ -31,16 +31,16 @@ const AdminPage = async () => {
           iconColor="text-yogo-primary"
         />
         <Card
-          Icon={FaCalendarCheck}
-          number={scheduledCount}
-          title="Total Number of Scheduled Appointments"
-          iconColor="text-green-400"
-        />
-        <Card
           Icon={FaCalendarDay}
           number={pendingCount}
           title="Total Number of Appointment Pending"
           iconColor="text-yellow-400"
+        />
+        <Card
+          Icon={FaCalendarCheck}
+          number={scheduledCount}
+          title="Total Number of Scheduled Appointments"
+          iconColor="text-green-400"
         />
         <Card
           Icon={FaCalendarTimes}

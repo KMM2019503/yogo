@@ -52,11 +52,16 @@ const RequestSuccess = async ({
           </div>
         </section>
 
-        <Button variant="outline" className="shad-primary-btn" asChild>
-          <Link href={`/patients/${userId}/new-appointment`}>
-            New Appointment
-          </Link>
-        </Button>
+        <div className="flex flex-col gap-y-5 md:flex-row gap-x-4">
+          <Button variant="outline" asChild>
+            <Link href={`/patients/${userId}/dashboard`}>Dashboard</Link>
+          </Button>
+          <Button variant="outline" className="shad-primary-btn" asChild>
+            <Link href={`/patients/${userId}/new-appointment`}>
+              New Appointment
+            </Link>
+          </Button>
+        </div>
 
         <p className="copyright">© 2024 YoGo </p>
       </div>

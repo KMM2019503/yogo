@@ -136,6 +136,50 @@ export const getAllAppointments = async (filter: string) => {
   }
 };
 
+export const getAppointmentsByUserId = async (userId: string) => {
+  try {
+    const appointments = await database.listDocuments(
+      process.env.NEXT_PUBLIC_DATABASE_KEY!,
+      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      [sdk.Query.orderDesc("$createdAt"), sdk.Query.equal("userId", userId)]
+    );
+
+    const initialCounts = {
+      scheduledCount: 0,
+      pendingCount: 0,
+      cancelledCount: 0,
+    };
+
+    const counts = (appointments.documents as Appointment[]).reduce(
+      (acc, appointment) => {
+        switch (appointment.status) {
+          case "schedule":
+            acc.scheduledCount++;
+            break;
+          case "pending":
+            acc.pendingCount++;
+            break;
+          case "cancel":
+            acc.cancelledCount++;
+            break;
+        }
+        return acc;
+      },
+      initialCounts
+    );
+    const data = {
+      totalCount: appointments.total,
+      ...counts,
+      documents: appointments.documents,
+    };
+
+    console.log("🚀 ~ getAppointmentsByUserId ~ data:", parseStringify(data));
+    return parseStringify(data);
+  } catch (error) {
+    console.log("🚀 ~ getAppointmentsByUserId ~ error:", error);
+  }
+};
+
 export const handleSentSMS = async (userId: string, content: string) => {
   try {
     const message = await messaging.createSms(
