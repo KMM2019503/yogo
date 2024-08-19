@@ -1,7 +1,7 @@
 "use server";
 
-import { database } from "@/lib/appwrite.config";
-import { parseStringify } from "@/lib/utils";
+import { database, messaging } from "@/lib/appwrite.config";
+import { formatDateTime, parseStringify } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 import { revalidatePath } from "next/cache";
 import * as sdk from "node-appwrite";
@@ -68,6 +68,22 @@ export const handleUpdateAppointment = async (
         cancellationReason: appointment.cancellationReason,
       }
     );
+
+    if (!response) {
+      throw Error;
+    }
+
+    const sms = `Greetings from CarePulse. ${
+      updateAppointment.type === "schedule"
+        ? `Your appointment is confirmed for ${
+            formatDateTime(appointment.schedule!).dateTime
+          } with Dr. ${appointment.doctor}`
+        : `We regret to inform that your appointment for ${
+            formatDateTime(appointment.schedule!).dateTime
+          } is cancelled. Reason:  ${appointment.cancellationReason}`
+    }.`;
+    await handleSentSMS(updateAppointment.userId, sms);
+
     revalidatePath("/admin");
     return parseStringify(response);
   } catch (error) {
@@ -117,5 +133,19 @@ export const getAllAppointments = async (filter: string) => {
     return parseStringify(data);
   } catch (error) {
     console.log("🚀 ~ getAllAppointments ~ error:", error);
+  }
+};
+
+export const handleSentSMS = async (userId: string, content: string) => {
+  try {
+    const message = await messaging.createSms(
+      sdk.ID.unique(),
+      content,
+      [],
+      [userId]
+    );
+    return parseStringify(message);
+  } catch (error) {
+    console.log("🚀 ~ handleSentSMS ~ error:", error);
   }
 };

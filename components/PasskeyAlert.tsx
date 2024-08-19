@@ -1,29 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-
 import { usePathname, useRouter } from "next/navigation";
 import { CgClose } from "react-icons/cg";
 import { decryptKey, encryptKey } from "@/lib/utils";
+import Cookies from "js-cookie";
 
 export function PasskeyAlert() {
   const router = useRouter();
@@ -32,23 +27,17 @@ export function PasskeyAlert() {
   const [showDialog, setShowDialog] = useState(true);
   const [passCode, setPassCode] = useState("");
 
-  const accessCode =
-    typeof window !== "undefined"
-      ? window.localStorage.getItem("AdminAccessCode")
-      : null;
-
   useEffect(() => {
+    const accessCode = Cookies.get("AdminAccessCode");
     const prePassCode = accessCode && decryptKey(accessCode);
-    if (pathName) {
-      if (prePassCode === process.env.NEXT_PUBLIC_ADMIN_PASS_CODE) {
-        setShowDialog(false);
-        router.push("/admin");
-      } else {
-        setShowDialog(true);
-      }
+
+    if (prePassCode === process.env.NEXT_PUBLIC_ADMIN_PASS_CODE) {
+      setShowDialog(false);
+      router.push("/admin");
     } else {
+      setShowDialog(true);
     }
-  }, [accessCode, pathName, router]);
+  }, [pathName, router]);
 
   const onClose = () => {
     setShowDialog(false);
@@ -60,8 +49,7 @@ export function PasskeyAlert() {
 
     if (passCode === process.env.NEXT_PUBLIC_ADMIN_PASS_CODE) {
       const encryptCode = encryptKey(passCode);
-
-      localStorage.setItem("AdminAccessCode", encryptCode);
+      Cookies.set("AdminAccessCode", encryptCode, { expires: 1 });
 
       setShowDialog(false);
       router.push("/admin");
@@ -75,7 +63,7 @@ export function PasskeyAlert() {
       <AlertDialogContent className="bg-dark-200">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex justify-between items-center">
-            <p className="font-mono font-bold text-xl">Admin Verfication</p>
+            <p className="font-mono font-bold text-xl">Admin Verification</p>
             <CgClose className="cursor-pointer size-5" onClick={onClose} />
           </AlertDialogTitle>
           <AlertDialogDescription>
