@@ -53,7 +53,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
         asChild
       >
         <Link
-          href={`/patient/${appointment.userId}/dashboard/${appointment.$id}`}
+          href={`/patients/${appointment.userId}/dashboard/${appointment.$id}`}
         >
           Detail
         </Link>
