@@ -39,17 +39,17 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
         )}
       </div>
 
-      <p className="mt-2 text-gray-200 text-lg">
+      <p className="mt-2 text-slate-600 text-lg">
         {formatDateTime(appointment.schedule).dateTime}
       </p>
 
-      <p className="mt-2 text-gray-200 text-sm">
+      <p className="mt-2 text-slate-600 text-sm">
         Reason : {appointment.reason}
       </p>
 
       <Button
         variant={"outline"}
-        className="w-full hover:bg-dark-500 mt-2"
+        className="w-full hover:bg-slate-200 mt-2"
         asChild
       >
         <Link

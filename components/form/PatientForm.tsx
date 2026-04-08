@@ -59,19 +59,35 @@ const PatientForm = () => {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-        <section className="space-y-4">
-          <p className="text-dark-700">Schedule your first appointment</p>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-5">
+        <section className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
+            Patient Sign In
+          </p>
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Welcome back
+          </h2>
+          <p className="text-sm leading-6 text-slate-600">
+            Enter your details to continue to appointment scheduling.
+          </p>
         </section>
+
         {/* User Name */}
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-slate-700">
+                Full Name
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Mical Jordan" {...field} />
+                <Input
+                  placeholder="Mical Jordan"
+                  className="h-11 rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-sky-500 focus-visible:ring-offset-0"
+                  autoComplete="name"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -82,10 +98,17 @@ const PatientForm = () => {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-slate-700">
+                Email
+              </FormLabel>
               <FormControl>
-                <Input placeholder="micaljordan@gmail.com" {...field} />
+                <Input
+                  placeholder="micaljordan@gmail.com"
+                  className="h-11 rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-sky-500 focus-visible:ring-offset-0"
+                  autoComplete="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,8 +120,10 @@ const PatientForm = () => {
           control={form.control}
           name="phone"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-slate-700">
+                Phone Number
+              </FormLabel>
               <FormControl>
                 <PhoneInput
                   defaultCountry="MM"
@@ -108,14 +133,25 @@ const PatientForm = () => {
                   withCountryCallingCode
                   value={field.value as string}
                   onChange={field.onChange}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <SubmitButton isLoading={loading}>Get Started</SubmitButton>
+
+        <SubmitButton
+          isLoading={loading}
+          className="h-11 w-full rounded-xl bg-sky-700 text-white shadow-sm transition-colors hover:bg-sky-800 focus-visible:ring-sky-500"
+        >
+          Continue
+        </SubmitButton>
+
+        <p className="text-xs leading-5 text-slate-500">
+          Use your own contact details only. This portal is intended for secure
+          patient access.
+        </p>
       </form>
     </Form>
   );

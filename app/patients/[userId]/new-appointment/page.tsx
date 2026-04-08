@@ -25,7 +25,7 @@ const NewAppointment = async ({ params }: SearchParamProps) => {
               className="h-16 w-fit rounded-full"
             />
           </div>
-          <h1 className="text-xl font-mono font-bold text-gray-200">
+          <h1 className="text-xl font-mono font-bold text-slate-700">
             Hi {patient.name}
           </h1>
 

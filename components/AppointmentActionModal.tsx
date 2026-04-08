@@ -37,8 +37,8 @@ export const AppointmentActionModal = ({
           variant="ghost"
           className={`capitalize transition py-1 px-3 rounded-3xl ${
             type === "schedule"
-              ? "text-green-500 hover:bg-green-600 hover:text-gray-200"
-              : "text-red-700 hover:bg-red-600 hover:text-gray-200"
+              ? "text-green-500 hover:bg-green-600 hover:text-white"
+              : "text-red-700 hover:bg-red-600 hover:text-white"
           }`}
         >
           {type}

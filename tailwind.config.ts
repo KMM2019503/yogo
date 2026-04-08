@@ -22,9 +22,9 @@ const config = {
     extend: {
       colors: {
         yogo: {
-          primary: "#00ffff",
-          dark: "#39aaaa",
-          bgDark: "#222831",
+          primary: "#0284c7",
+          dark: "#0369a1",
+          bgDark: "#ffffff",
         },
         green: {
           500: "#24AE7C",
@@ -40,15 +40,15 @@ const config = {
           700: "#F24E43",
         },
         light: {
-          200: "#E8E9E9",
+          200: "#334155",
         },
         dark: {
-          200: "#0D0F10",
-          300: "#131619",
-          400: "#1A1D21",
-          500: "#363A3D",
-          600: "#76828D",
-          700: "#ABB8C4",
+          200: "#ffffff",
+          300: "#f8fafc",
+          400: "#f1f5f9",
+          500: "#cbd5e1",
+          600: "#64748b",
+          700: "#0f172a",
         },
       },
       fontFamily: {

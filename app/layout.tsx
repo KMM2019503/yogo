@@ -28,15 +28,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning={true}>
       <body
         className={cn(
-          "min-h-screen bg-dark-300 font-sans antialiased",
+          "min-h-screen bg-dark-300 text-slate-900 font-sans antialiased",
           UbuntuFont.variable
         )}
         suppressHydrationWarning={true}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
-          // enableSystem
+          defaultTheme="light"
+          enableSystem={false}
+          forcedTheme="light"
           // disableTransitionOnChange
         >
           {children}

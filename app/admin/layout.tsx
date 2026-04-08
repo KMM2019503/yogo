@@ -6,7 +6,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen bg-dark-300 font-sans antialiased">
+    <div className="min-h-screen bg-dark-300 text-slate-900 font-sans antialiased">
       <Header />
       {children}
       {/* Footer */}
