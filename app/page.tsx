@@ -3,8 +3,9 @@ import PasskeyAlert from "@/components/PasskeyAlert";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home({ searchParams }: SearchParamProps) {
-  const isAdmin = searchParams.isAdmin === "true";
+export default async function Home({ searchParams }: SearchParamProps) {
+  const resolvedSearchParams = await searchParams;
+  const isAdmin = resolvedSearchParams.isAdmin === "true";
 
   return (
     <div className="flex h-screen max-h-screen">

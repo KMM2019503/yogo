@@ -1,8 +1,11 @@
 "use client";
-import Player from "lottie-react";
+import dynamic from "next/dynamic";
 import React from "react";
 import animationData from "@/public/json/shedule.json";
-const PendingAnimation = () => {
+
+const Player = dynamic(() => import("lottie-react"), { ssr: false });
+
+const ScheduleAnimation = () => {
   return (
     <div className="flex justify-center items-center my-10">
       <Player
@@ -15,4 +18,4 @@ const PendingAnimation = () => {
   );
 };
 
-export default PendingAnimation;
+export default ScheduleAnimation;

@@ -4,15 +4,25 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/utils";
 import { getAppointment } from "@/actions/appointment.action";
+import { notFound } from "next/navigation";
 
 import { FaCalendarCheck } from "react-icons/fa";
 
 const RequestSuccess = async ({
   searchParams,
-  params: { userId },
+  params,
 }: SearchParamProps) => {
-  const appointmentId = (searchParams?.appointmentId as string) || "";
+  const resolvedSearchParams = await searchParams;
+  const { userId } = await params;
+  const appointmentId = (resolvedSearchParams?.appointmentId as string) || "";
+  if (!appointmentId) {
+    notFound();
+  }
+
   const appointment = await getAppointment(appointmentId);
+  if (!appointment) {
+    notFound();
+  }
 
   return (
     <div className=" flex h-screen max-h-screen px-[5%]">

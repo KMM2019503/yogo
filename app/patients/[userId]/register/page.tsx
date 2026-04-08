@@ -2,9 +2,16 @@ import React from "react";
 import Image from "next/image";
 import RegisterForm from "@/components/form/RegisterForm";
 import { getUser } from "@/actions/patient.action";
+import { notFound } from "next/navigation";
 
-const RegisterPage = async ({ params: { userId } }: SearchParamProps) => {
+const RegisterPage = async ({ params }: SearchParamProps) => {
+  const { userId } = await params;
   const user = await getUser(userId);
+
+  if (!user) {
+    notFound();
+  }
+
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container my-auto ">

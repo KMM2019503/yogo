@@ -8,15 +8,20 @@ import Detail from "./components/Detail";
 import SorryAnimation from "./components/SorryAnimation";
 import ScheduleAnimation from "./components/ScheduleAnimation";
 import PendingAnimation from "./components/PendingAnimation";
+import { notFound } from "next/navigation";
 
 export const revalidate = 0;
 
 const AppointmentDetail = async ({
-  params: { appointmentId },
+  params,
 }: {
-  params: { appointmentId: string };
+  params: Promise<{ appointmentId: string }>;
 }) => {
+  const { appointmentId } = await params;
   const appointment: Appointment = await getAppointment(appointmentId);
+  if (!appointment) {
+    notFound();
+  }
 
   const renderAnimation = () => {
     switch (appointment?.status) {

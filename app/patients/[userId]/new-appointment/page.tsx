@@ -2,9 +2,15 @@ import React from "react";
 import Image from "next/image";
 import AppointmentForm from "@/components/form/AppointmentForm";
 import { getPatient } from "@/actions/patient.action";
+import { redirect } from "next/navigation";
 
-const NewAppointment = async ({ params: { userId } }: SearchParamProps) => {
+const NewAppointment = async ({ params }: SearchParamProps) => {
+  const { userId } = await params;
   const patient = await getPatient(userId);
+
+  if (!patient) {
+    redirect(`/patients/${userId}/register`);
+  }
 
   return (
     <div className="flex h-screen max-h-screen">

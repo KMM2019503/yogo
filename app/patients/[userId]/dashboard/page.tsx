@@ -4,16 +4,23 @@ import { getUser } from "@/actions/patient.action";
 import { getAppointmentsByUserId } from "@/actions/appointment.action";
 import { Appointment } from "@/types/appwrite.types";
 import AppointmentCard from "./components/AppointmentCard";
+import { notFound } from "next/navigation";
 
 export const revalidate = 0;
 
 const PatientDashboard = async ({
-  params: { userId },
+  params,
 }: {
-  params: { userId: string };
+  params: Promise<{ userId: string }>;
 }) => {
+  const { userId } = await params;
   const user = await getUser(userId);
   const appointmentData = await getAppointmentsByUserId(userId);
+
+  if (!user || !appointmentData) {
+    notFound();
+  }
+
   return (
     <div className="max-h-screen">
       <Header user={user} />
