@@ -1,4 +1,5 @@
 import * as sdk from "node-appwrite";
+import { serverEnv } from "@/lib/server-env";
 
 // export const {
 //   API_SECRET_KEY,
@@ -13,9 +14,9 @@ import * as sdk from "node-appwrite";
 
 const client = new sdk.Client();
 client
-  .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT!)
-  .setProject(process.env.NEXT_PUBLIC_PROJECT_ID!)
-  .setKey(process.env.NEXT_PUBLIC_API_SECRET_KEY!);
+  .setEndpoint(serverEnv.APPWRITE_ENDPOINT)
+  .setProject(serverEnv.APPWRITE_PROJECT_ID)
+  .setKey(serverEnv.APPWRITE_API_SECRET_KEY);
 
 // client
 //   .setEndpoint("https://cloud.appwrite.io/v1")

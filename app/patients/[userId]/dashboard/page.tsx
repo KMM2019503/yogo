@@ -14,8 +14,10 @@ const PatientDashboard = async ({
   params: Promise<{ userId: string }>;
 }) => {
   const { userId } = await params;
-  const user = await getUser(userId);
-  const appointmentData = await getAppointmentsByUserId(userId);
+  const [user, appointmentData] = await Promise.all([
+    getUser(userId),
+    getAppointmentsByUserId(userId),
+  ]);
 
   if (!user || !appointmentData) {
     notFound();

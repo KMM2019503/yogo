@@ -1,7 +1,6 @@
 import { Appointment } from "@/types/appwrite.types";
 
 export const ConvertLineGraphData = (appointments: Appointment[]) => {
-  console.log("🚀 ~ ConvertLineGraphData ~ appointments:", appointments);
 
   const monthMap: { [key: string]: number } = {
     JAN: 0,

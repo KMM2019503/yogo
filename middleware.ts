@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { decryptKey } from "@/lib/utils";
+import { serverEnv } from "@/lib/server-env";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,7 +15,7 @@ export function middleware(request: NextRequest) {
 
     const decryptedCode = decryptKey(accessCode.value);
 
-    if (decryptedCode !== process.env.NEXT_PUBLIC_ADMIN_PASS_CODE) {
+    if (decryptedCode !== serverEnv.ADMIN_PASS_CODE) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }

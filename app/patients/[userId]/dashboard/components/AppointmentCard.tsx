@@ -54,6 +54,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
       >
         <Link
           href={`/patients/${appointment.userId}/dashboard/${appointment.$id}`}
+          prefetch={true}
         >
           Detail
         </Link>

@@ -1,6 +1,7 @@
 "use server";
 
 import { database, messaging } from "@/lib/appwrite.config";
+import { serverEnv } from "@/lib/server-env";
 import { formatDateTime, parseStringify } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 import { revalidatePath } from "next/cache";
@@ -9,8 +10,8 @@ import * as sdk from "node-appwrite";
 export const getAppointment = async (id: string) => {
   try {
     const appointment = await database.getDocument(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_APPOINTMENT_COLLECTION_ID,
       id
     );
 
@@ -24,8 +25,8 @@ export const createNewAppointment = async (data: CreateAppointmentParams) => {
   try {
     // appointment createion
     const newAppointment = await database.createDocument(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_APPOINTMENT_COLLECTION_ID,
       sdk.ID.unique(),
       {
         userId: data.userId,
@@ -51,8 +52,8 @@ export const handleUpdateAppointment = async (
   try {
     // update appointment
     const response = await database.updateDocument(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_APPOINTMENT_COLLECTION_ID,
       updateAppointment.appointmentId,
       {
         userId: appointment.userId,
@@ -93,8 +94,8 @@ export const getAllAppointments = async (filter: string) => {
     // const queries = filter !== "all" ? [sdk.Query.equal("status", filter)] : [];
 
     const appointments = await database.listDocuments(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_APPOINTMENT_COLLECTION_ID,
       [sdk.Query.orderDesc("$createdAt")]
     );
 
@@ -136,8 +137,8 @@ export const getAllAppointments = async (filter: string) => {
 export const getAppointmentsByUserId = async (userId: string) => {
   try {
     const appointments = await database.listDocuments(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_APPOINTMENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_APPOINTMENT_COLLECTION_ID,
       [sdk.Query.orderDesc("$createdAt"), sdk.Query.equal("userId", userId)]
     );
 

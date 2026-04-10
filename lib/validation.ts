@@ -11,6 +11,12 @@ export const UserFromValidation = z.object({
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
 });
 
+export const PhoneLookupValidation = z.object({
+  phone: z
+    .string()
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+});
+
 export const PatientFormValidation = z.object({
   name: z
     .string()

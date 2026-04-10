@@ -2,6 +2,7 @@
 
 import * as sdk from "node-appwrite";
 import { database, storage, users } from "@/lib/appwrite.config";
+import { serverEnv } from "@/lib/server-env";
 import { parseStringify } from "@/lib/utils";
 import { InputFile } from "node-appwrite/file";
 
@@ -35,11 +36,20 @@ export const getUser = async (userId: string) => {
   }
 };
 
+export const getUserByPhone = async (phone: string) => {
+  try {
+    const userList = await users.list([sdk.Query.equal("phone", [phone])]);
+    return parseStringify(userList.users[0] ?? null);
+  } catch (error) {
+    console.log("🚀 ~ getUserByPhone ~ error:", error);
+  }
+};
+
 export const getPatient = async (userId: string) => {
   try {
     const patient = await database.listDocuments(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_PATIENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_PATIENT_COLLECTION_ID,
       [sdk.Query.equal("userId", userId)]
     );
     return parseStringify(patient.documents[0]);
@@ -64,7 +74,7 @@ export const registerPatient = async ({
         );
 
       file = await storage.createFile(
-        process.env.NEXT_PUBLIC_BUCKET_ID!,
+        serverEnv.APPWRITE_BUCKET_ID,
         sdk.ID.unique(),
         inputFile
       );
@@ -72,8 +82,8 @@ export const registerPatient = async ({
 
     // patient createion
     const newPatient = await database.createDocument(
-      process.env.NEXT_PUBLIC_DATABASE_KEY!,
-      process.env.NEXT_PUBLIC_PATIENT_Collection_ID!,
+      serverEnv.APPWRITE_DATABASE_ID,
+      serverEnv.APPWRITE_PATIENT_COLLECTION_ID,
       sdk.ID.unique(),
       {
         userId: patient.userId,
@@ -94,7 +104,7 @@ export const registerPatient = async ({
         indentificationType: patient.indentificationType,
         indentificationNumber: patient.indentificationNumber,
         indentificationDocumentId: file?.$id || null,
-        identificationDocumentUrl: `${process.env.NEXT_PUBLIC_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_BUCKET_ID}/files/${file?.$id}/view?project=${process.env.NEXT_PUBLIC_PROJECT_ID}`,
+        identificationDocumentUrl: `${serverEnv.APPWRITE_ENDPOINT}/storage/buckets/${serverEnv.APPWRITE_BUCKET_ID}/files/${file?.$id}/view?project=${serverEnv.APPWRITE_PROJECT_ID}`,
         treatmentConsent: patient.treatmentConsent,
         disclosureConsent: patient.disclosureConsent,
       }
