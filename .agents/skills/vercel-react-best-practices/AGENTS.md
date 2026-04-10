@@ -1813,20 +1813,6 @@ Specify primitive dependencies instead of objects to minimize effect re-runs.
 
 **Incorrect: re-runs on any user field change**
 
-```tsx
-useEffect(() => {
-  console.log(user.id)
-}, [user])
-```
-
-**Correct: re-runs only when id changes**
-
-```tsx
-useEffect(() => {
-  console.log(user.id)
-}, [user.id])
-```
-
 **For derived state, compute outside effect:**
 
 ```tsx

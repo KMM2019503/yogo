@@ -32,7 +32,5 @@ export const ConvertLineGraphData = (appointments: Appointment[]) => {
     total: monthMap[month],
   }));
 
-  console.log("🚀 ~ ConvertLineGraphData ~ result:", result);
-
   return result;
 };

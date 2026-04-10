@@ -1,0 +1,4 @@
+interface:
+  display_name: "Yogo UI Builder"
+  short_description: "Build and refine UI in the Yogo Next.js codebase"
+  default_prompt: "Build accessible, consistent UI in Yogo using local components and Tailwind conventions."

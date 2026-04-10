@@ -21,7 +21,6 @@ export const getAppointment = async (id: string) => {
 };
 
 export const createNewAppointment = async (data: CreateAppointmentParams) => {
-  console.log("🚀 ~ createNewAppointment ~ data:", data);
   try {
     // appointment createion
     const newAppointment = await database.createDocument(
@@ -38,8 +37,6 @@ export const createNewAppointment = async (data: CreateAppointmentParams) => {
         doctor: data.doctor,
       }
     );
-
-    console.log("🚀 ~ createNewAppointment ~ newAppointment:", newAppointment);
     return parseStringify(newAppointment);
   } catch (error) {
     console.log("🚀 ~ Error in createAppointment:", error);
@@ -173,7 +170,6 @@ export const getAppointmentsByUserId = async (userId: string) => {
       documents: appointments.documents,
     };
 
-    console.log("🚀 ~ getAppointmentsByUserId ~ data:", parseStringify(data));
     return parseStringify(data);
   } catch (error) {
     console.log("🚀 ~ getAppointmentsByUserId ~ error:", error);
