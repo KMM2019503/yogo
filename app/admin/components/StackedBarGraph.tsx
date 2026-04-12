@@ -1,15 +1,18 @@
 "use client";
 
 import {
-  ResponsiveContainer,
   BarChart,
   Bar,
   Cell,
   XAxis,
   YAxis,
-  Tooltip,
   CartesianGrid,
+  Tooltip,
 } from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+} from "@/components/ui/chart";
 
 interface StatusBarPoint {
   name: string;
@@ -17,11 +20,29 @@ interface StatusBarPoint {
   fill: string;
 }
 
+const chartConfig = {
+  value: {
+    label: "Appointments",
+    color: "#0284c7",
+  },
+} satisfies ChartConfig;
+
 const StackedBarGraph = ({ data }: { data: StatusBarPoint[] }) => {
+  const safeData = data.map((item) => ({
+    name: item.name,
+    value: Number(item.value) || 0,
+    fill: item.fill,
+  }));
+  const maxValue = Math.max(...safeData.map((item) => item.value), 0);
+
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} barCategoryGap={26}>
-        <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
+    <ChartContainer config={chartConfig} className="h-[185px] w-full">
+      <BarChart data={safeData} barCategoryGap={26} margin={{ left: 4, right: 10, top: 8, bottom: 0 }}>
+        <CartesianGrid
+          stroke="#e2e8f0"
+          strokeDasharray="4 4"
+          vertical={false}
+        />
         <XAxis
           dataKey="name"
           stroke="#64748b"
@@ -35,6 +56,7 @@ const StackedBarGraph = ({ data }: { data: StatusBarPoint[] }) => {
           tickLine={false}
           axisLine={false}
           allowDecimals={false}
+          domain={[0, Math.max(1, maxValue)]}
         />
         <Tooltip
           cursor={{ fill: "#e2e8f0", fillOpacity: 0.35 }}
@@ -46,12 +68,12 @@ const StackedBarGraph = ({ data }: { data: StatusBarPoint[] }) => {
           labelStyle={{ color: "#0f172a", fontWeight: 600 }}
         />
         <Bar dataKey="value" radius={[10, 10, 0, 0]} minPointSize={6}>
-          {data.map((entry) => (
+          {safeData.map((entry) => (
             <Cell key={entry.name} fill={entry.fill} />
           ))}
         </Bar>
       </BarChart>
-    </ResponsiveContainer>
+    </ChartContainer>
   );
 };
 

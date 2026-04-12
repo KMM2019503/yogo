@@ -8,20 +8,14 @@ import {
 } from "lucide-react";
 
 import { getAllAppointments } from "@/actions/appointment.action";
-import { ConvertLineGraphData, ConvertStatusGraphData } from "@/lib/graphData";
 import { Appointment } from "@/types/appwrite.types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   CardFromShnc as Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-
-import LineGraph from "./components/LineGraph";
-import StackedBarGraph from "./components/StackedBarGraph";
 
 export const revalidate = 0;
 
@@ -41,13 +35,6 @@ const AdminPage = async () => {
     cancelledCount: number;
     documents: Appointment[];
   };
-
-  const lineGraphData = ConvertLineGraphData(documents);
-  const statusChartData = ConvertStatusGraphData({
-    scheduledCount,
-    pendingCount,
-    cancelledCount,
-  });
 
   const statCards = [
     {
@@ -81,94 +68,53 @@ const AdminPage = async () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+      <section className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-2">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
+            Today
+          </p>
+          <p className="text-sm font-semibold text-slate-900">
+            Admin Snapshot
+          </p>
+        </div>
+        <Button
+          asChild
+          size="sm"
+          className="h-8 bg-sky-700 text-white hover:bg-sky-800"
+        >
+          <Link href="/admin/schedule-manage">
+            Manage Schedule
+            <ArrowRight className="ml-1.5 size-3.5" />
+          </Link>
+        </Button>
+      </section>
+
+      <section className="grid grid-cols-4 gap-3">
         {statCards.map((card) => {
           const Icon = card.icon;
 
           return (
             <Card key={card.title} className="border-slate-200 bg-white shadow-sm">
-              <CardHeader className="pb-3">
+              <CardHeader className="p-3 pb-2">
                 <div className="flex items-center justify-between gap-3">
-                  <Badge className={card.accentClass}>{card.title}</Badge>
-                  <span className="rounded-xl border border-slate-200 bg-slate-50 p-2">
-                    <Icon className="size-4 text-slate-700" />
+                  <Badge className={`text-[10px] ${card.accentClass}`}>
+                    {card.title}
+                  </Badge>
+                  <span className="rounded-lg border border-slate-200 bg-slate-50 p-1.5">
+                    <Icon className="size-3.5 text-slate-700" />
                   </span>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-semibold tracking-tight text-slate-900">
+              <CardContent className="p-3 pt-0">
+                <p className="text-2xl font-semibold tracking-tight text-slate-900">
                   {card.value}
                 </p>
-                <p className="mt-1 text-sm text-slate-500">{card.helper}</p>
+                <p className="mt-0.5 text-xs text-slate-500">{card.helper}</p>
               </CardContent>
             </Card>
           );
         })}
-      </section>
-
-      <section className="grid grid-cols-1 gap-4 2xl:grid-cols-5">
-        <Card className="border-slate-200 bg-white shadow-sm 2xl:col-span-3">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base text-slate-900">
-              Monthly Request Trend
-            </CardTitle>
-            <CardDescription>
-              Real appointment requests grouped by month.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <LineGraph data={lineGraphData} />
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 bg-white shadow-sm 2xl:col-span-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base text-slate-900">
-              Status Distribution
-            </CardTitle>
-            <CardDescription>
-              Scheduled, pending, and cancelled appointment volumes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <StackedBarGraph data={statusChartData} />
-            <div className="grid grid-cols-3 gap-2">
-              {statusChartData.map((item) => (
-                <div
-                  key={item.name}
-                  className="rounded-xl border border-slate-200 bg-slate-50 p-3"
-                >
-                  <p className="text-xs font-medium text-slate-500">{item.name}</p>
-                  <p className="mt-1 text-lg font-semibold text-slate-900">
-                    {item.value}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section>
-        <Card className="border-slate-200 bg-white shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between gap-4">
-            <div>
-              <CardTitle className="text-base text-slate-900">
-                Manage Appointments
-              </CardTitle>
-              <CardDescription>
-                Open schedule management for filtering and appointment actions.
-              </CardDescription>
-            </div>
-            <Button asChild className="bg-sky-700 text-white hover:bg-sky-800">
-              <Link href="/admin/schedule-manage">
-                Go To Schedule Manage
-                <ArrowRight className="ml-2 size-4" />
-              </Link>
-            </Button>
-          </CardHeader>
-        </Card>
       </section>
     </div>
   );

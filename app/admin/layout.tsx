@@ -28,11 +28,11 @@ export default function RootLayout({
         </div>
       </section>
 
-      <section className="hidden min-h-screen md:flex">
+      <section className="flex min-h-screen max-md:hidden">
         <AdminSidebar />
         <div className="flex min-h-screen flex-1 flex-col">
           <AdminTopbar />
-          <main className="flex-1 p-6 xl:p-8">{children}</main>
+          <main className="flex-1 overflow-hidden p-4 xl:p-5">{children}</main>
         </div>
       </section>
     </div>

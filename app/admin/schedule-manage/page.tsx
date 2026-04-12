@@ -21,7 +21,7 @@ const ScheduleManagePage = async () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="h-full overflow-y-auto pr-1 space-y-4">
       <Card className="border-slate-200 bg-white shadow-sm">
         <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
