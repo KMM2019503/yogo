@@ -1,122 +1,174 @@
-import { getAllAppointments } from "@/actions/appointment.action";
-
-import Card from "@/components/Card";
-import AppointmentDataTabel from "@/components/dataTabel/appointment/AppointmentDataTabel";
-import React from "react";
-
-export const revalidate = 0;
-
-import { FaCalendarCheck, FaChartBar } from "react-icons/fa";
-import { FaCalendarTimes } from "react-icons/fa";
-import { FaCalendarDay } from "react-icons/fa";
-import { FaCalendarAlt } from "react-icons/fa";
-
+import Link from "next/link";
 import {
-  CardFromShnc,
+  ArrowRight,
+  CalendarCheck2,
+  CalendarClock,
+  CalendarX2,
+  ClipboardList,
+} from "lucide-react";
+
+import { getAllAppointments } from "@/actions/appointment.action";
+import { ConvertLineGraphData, ConvertStatusGraphData } from "@/lib/graphData";
+import { Appointment } from "@/types/appwrite.types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  CardFromShnc as Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import LineGraph from "./components/LineGraph";
-import { Appointment } from "@/types/appwrite.types";
-import { ConvertLineGraphData } from "@/lib/graphData";
 import StackedBarGraph from "./components/StackedBarGraph";
 
-const fakeData = [
-  { name: "JAN", total: 85 },
-  { name: "FEB", total: 72 },
-  { name: "MAR", total: 94 },
-  { name: "APR", total: 68 },
-  { name: "MAY", total: 79 },
-  { name: "JUN", total: 88 },
-  { name: "JUL", total: 96 },
-  { name: "AUG", total: 83 },
-  { name: "SEP", total: 75 },
-  { name: "OCT", total: 90 },
-  { name: "NOV", total: 65 },
-  { name: "DEC", total: 92 },
-];
+export const revalidate = 0;
 
 const AdminPage = async () => {
+  const appointmentsData = await getAllAppointments("all");
+
   const {
-    totalCount,
+    totalCount = 0,
+    scheduledCount = 0,
+    pendingCount = 0,
+    cancelledCount = 0,
+    documents = [],
+  } = (appointmentsData ?? {}) as {
+    totalCount: number;
+    scheduledCount: number;
+    pendingCount: number;
+    cancelledCount: number;
+    documents: Appointment[];
+  };
+
+  const lineGraphData = ConvertLineGraphData(documents);
+  const statusChartData = ConvertStatusGraphData({
     scheduledCount,
     pendingCount,
     cancelledCount,
-    documents,
-  } = await getAllAppointments("all");
+  });
 
-  const LineGraphData = ConvertLineGraphData(documents);
-  const StackedBarGraphData = [
+  const statCards = [
     {
-      name: "Total",
-      total: totalCount,
-      scheduled: scheduledCount,
-      pending: pendingCount,
-      cancelled: cancelledCount,
+      title: "Total Appointments",
+      value: totalCount,
+      helper: "All requests in the system",
+      icon: ClipboardList,
+      accentClass: "bg-sky-50 text-sky-700",
+    },
+    {
+      title: "Scheduled",
+      value: scheduledCount,
+      helper: "Confirmed bookings",
+      icon: CalendarCheck2,
+      accentClass: "bg-emerald-50 text-emerald-700",
+    },
+    {
+      title: "Pending",
+      value: pendingCount,
+      helper: "Waiting for review",
+      icon: CalendarClock,
+      accentClass: "bg-amber-50 text-amber-700",
+    },
+    {
+      title: "Cancelled",
+      value: cancelledCount,
+      helper: "Declined appointments",
+      icon: CalendarX2,
+      accentClass: "bg-rose-50 text-rose-700",
     },
   ];
+
   return (
-    <div className="px-[7%] md:px-[6%] ">
-      {/* analysis */}
-      <section className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-x-10 gap-y-3 md:gap-y-4 lg:gap-y-0">
-        <Card
-          Icon={FaCalendarAlt}
-          number={totalCount}
-          title="Total Number of Appointment"
-          iconColor="text-yogo-primary"
-        />
-        <Card
-          Icon={FaCalendarDay}
-          number={pendingCount}
-          title="Total Number of Appointment Pending"
-          iconColor="text-yellow-400"
-        />
-        <Card
-          Icon={FaCalendarCheck}
-          number={scheduledCount}
-          title="Total Number of Scheduled Appointments"
-          iconColor="text-green-400"
-        />
-        <Card
-          Icon={FaCalendarTimes}
-          number={cancelledCount}
-          title="Total Number of Appointment Cancelled"
-          iconColor="text-red-500"
-        />
+    <div className="space-y-6">
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+        {statCards.map((card) => {
+          const Icon = card.icon;
+
+          return (
+            <Card key={card.title} className="border-slate-200 bg-white shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between gap-3">
+                  <Badge className={card.accentClass}>{card.title}</Badge>
+                  <span className="rounded-xl border border-slate-200 bg-slate-50 p-2">
+                    <Icon className="size-4 text-slate-700" />
+                  </span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-semibold tracking-tight text-slate-900">
+                  {card.value}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">{card.helper}</p>
+              </CardContent>
+            </Card>
+          );
+        })}
       </section>
 
-      {/* Graph & Chart */}
-      <section className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <CardFromShnc className="col-span-1 md:col-span-1 lg:col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">
-              Appointment Request Line Graph
+      <section className="grid grid-cols-1 gap-4 2xl:grid-cols-5">
+        <Card className="border-slate-200 bg-white shadow-sm 2xl:col-span-3">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base text-slate-900">
+              Monthly Request Trend
             </CardTitle>
-            <FaChartBar className="size-4 text-muted-foreground" />
+            <CardDescription>
+              Real appointment requests grouped by month.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* <LineGraph data={LineGraphData} /> */}
-            <LineGraph data={fakeData} />
+            <LineGraph data={lineGraphData} />
           </CardContent>
-        </CardFromShnc>
+        </Card>
 
-        <CardFromShnc className="col-span-1 md:col-span-1 lg:col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">
-              Appointment Request Line Graph
+        <Card className="border-slate-200 bg-white shadow-sm 2xl:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base text-slate-900">
+              Status Distribution
             </CardTitle>
-            <FaChartBar className="size-4 text-muted-foreground" />
+            <CardDescription>
+              Scheduled, pending, and cancelled appointment volumes.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <StackedBarGraph data={StackedBarGraphData} />
+          <CardContent className="space-y-4">
+            <StackedBarGraph data={statusChartData} />
+            <div className="grid grid-cols-3 gap-2">
+              {statusChartData.map((item) => (
+                <div
+                  key={item.name}
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                >
+                  <p className="text-xs font-medium text-slate-500">{item.name}</p>
+                  <p className="mt-1 text-lg font-semibold text-slate-900">
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
           </CardContent>
-        </CardFromShnc>
+        </Card>
       </section>
 
-      {/* data tabel */}
-      <section className="mt-10">
-        <AppointmentDataTabel appointments={documents} />
+      <section>
+        <Card className="border-slate-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-base text-slate-900">
+                Manage Appointments
+              </CardTitle>
+              <CardDescription>
+                Open schedule management for filtering and appointment actions.
+              </CardDescription>
+            </div>
+            <Button asChild className="bg-sky-700 text-white hover:bg-sky-800">
+              <Link href="/admin/schedule-manage">
+                Go To Schedule Manage
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
+            </Button>
+          </CardHeader>
+        </Card>
       </section>
     </div>
   );

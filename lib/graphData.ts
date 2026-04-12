@@ -1,7 +1,6 @@
 import { Appointment } from "@/types/appwrite.types";
 
 export const ConvertLineGraphData = (appointments: Appointment[]) => {
-
   const monthMap: { [key: string]: number } = {
     JAN: 0,
     FEB: 0,
@@ -33,3 +32,17 @@ export const ConvertLineGraphData = (appointments: Appointment[]) => {
 
   return result;
 };
+
+export const ConvertStatusGraphData = ({
+  scheduledCount,
+  pendingCount,
+  cancelledCount,
+}: {
+  scheduledCount: number;
+  pendingCount: number;
+  cancelledCount: number;
+}) => [
+  { name: "Scheduled", value: scheduledCount, fill: "#16a34a" },
+  { name: "Pending", value: pendingCount, fill: "#f59e0b" },
+  { name: "Cancelled", value: cancelledCount, fill: "#ef4444" },
+];

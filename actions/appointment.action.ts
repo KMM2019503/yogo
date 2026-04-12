@@ -83,6 +83,7 @@ export const handleUpdateAppointment = async (
     await handleSentSMS(updateAppointment.userId, sms);
 
     revalidatePath("/admin");
+    revalidatePath("/admin/schedule-manage");
     return parseStringify(response);
   } catch (error) {
     console.log("🚀 ~ Error in updateAppointment ->:", error);
