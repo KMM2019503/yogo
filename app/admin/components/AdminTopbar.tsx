@@ -36,13 +36,10 @@ const AdminTopbar = () => {
   );
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/85 px-6 py-4 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/85 px-6 py-2 backdrop-blur">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-            YoGo Admin
-          </p>
-          <h1 className="text-xl font-semibold text-slate-900">{title}</h1>
+          <h1 className="text-base font-semibold text-slate-900">{title}</h1>
         </div>
 
         <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">

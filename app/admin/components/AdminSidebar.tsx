@@ -24,8 +24,8 @@ const AdminSidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="w-72 border-r border-slate-200/80 bg-white/90 px-5 py-6">
-      <div className="mb-10 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+    <aside className="w-60 border-r border-slate-200/80 bg-white/90 px-5 py-6">
+      <div className="mb-10 flex items-center gap-3px-3 py-2">
         <Image
           src="/yogo-logo.jpeg"
           alt="YoGo logo"
@@ -37,7 +37,7 @@ const AdminSidebar = () => {
           <p className="text-sm font-medium tracking-[0.12em] text-slate-500">
             YOGO
           </p>
-          <p className="text-lg font-semibold text-slate-900">Admin Panel</p>
+          <p className="text-base font-semibold text-slate-900">Admin Panel</p>
         </div>
       </div>
 
