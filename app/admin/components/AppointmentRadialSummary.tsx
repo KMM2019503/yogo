@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 import {
-  CardFromShnc as Card,
+  Card,
   CardContent,
   CardDescription,
   CardFooter,

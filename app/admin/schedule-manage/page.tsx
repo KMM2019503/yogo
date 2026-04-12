@@ -4,7 +4,7 @@ import { getAllAppointments } from "@/actions/appointment.action";
 import { Appointment } from "@/types/appwrite.types";
 import { Badge } from "@/components/ui/badge";
 import {
-  CardFromShnc as Card,
+  Card,
   CardContent,
   CardHeader,
   CardTitle,
