@@ -13,7 +13,7 @@ const Card = ({ Icon, number, title, iconColor }: CardProps) => {
     <div className="border rounded-md p-4 bg-yogo-bgDark shadow-md shadow-dark-500">
       <div className="flex justify-start items-center gap-x-5">
         <Icon className={cn("size-8", iconColor)} />
-        <p className="text-3xl font-mono font-bold">{number}</p>
+        <p className="text-3xl font-sans font-bold">{number}</p>
       </div>
       <p className="mt-4 text-base md:text-xs ">{title}</p>
     </div>

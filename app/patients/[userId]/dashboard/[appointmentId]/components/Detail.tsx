@@ -22,12 +22,12 @@ const Detail = ({ appointment }: DetailProps) => {
       <Separator className="my-3" />
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="space-y-1 text-sm text-slate-700 sm:text-base">
-          <p className="font-mono">
+          <p className="font-sans">
             {formatDateTime(appointment?.schedule).dateTime}
           </p>
-          <p className="font-mono">Reason: {appointment?.reason}</p>
+          <p className="font-sans">Reason: {appointment?.reason}</p>
           {appointment?.note && (
-            <p className="font-mono">Note: {appointment?.note}</p>
+            <p className="font-sans">Note: {appointment?.note}</p>
           )}
         </div>
 
@@ -35,8 +35,8 @@ const Detail = ({ appointment }: DetailProps) => {
         <Separator orientation="vertical" className="hidden h-auto md:block" />
 
         <div className="space-y-1 text-sm text-slate-700 sm:text-base">
-          <p className="font-mono">Doctor: {appointment?.doctor}</p>
-          <p className="font-mono">Patient: {patientName}</p>
+          <p className="font-sans">Doctor: {appointment?.doctor}</p>
+          <p className="font-sans">Patient: {patientName}</p>
           <p>
             <span className={getStatusBadgeClassName(appointment.status)}>
               {statusLabelByValue[appointment.status]}

@@ -14,7 +14,7 @@ const IconBadge = ({ Icon, text, iconColor = "" }: IconBadgeType) => {
     <Badge className="bg-dark-400 border-dark-700">
       <div className="flex items-center gap-2">
         <Icon className={cn("size-5", iconColor)} />
-        <p className="text-base font-mono ">{text}</p>
+        <p className="text-base font-sans ">{text}</p>
       </div>
     </Badge>
   );

@@ -51,31 +51,17 @@ export default async function Home({ searchParams }: SearchParamProps) {
             ))}
           </div>
 
-          <section className="relative z-10 shrink-0 overflow-hidden px-5 pb-16 pt-6 sm:px-7 sm:pb-20 sm:pt-8">
-            <div className="relative z-10 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Image
-                  src={"/yogo-logo.jpeg"}
-                  alt="YoGo logo"
-                  width={88}
-                  height={88}
-                  className="h-12 w-12 rounded-full border border-white/35 object-cover shadow-sm"
-                />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] sm:text-sm">
-                    Yogo Health
-                  </p>
-                  <p className="text-xs sm:text-sm">
-                    Care that stays connected
-                  </p>
-                </div>
-              </div>
-              <Link
-                href={"/?isAdmin=true"}
-                className="rounded-xl bg-white/20 px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/30"
-              >
-                Admin
-              </Link>
+          <section className="relative z-10 flex min-h-[36svh] flex-1 items-center justify-center overflow-hidden px-5 pb-16 pt-6 sm:px-7 sm:pb-20 sm:pt-8 md:min-h-[40dvh]">
+            <div className="flex flex-col items-center gap-1 text-center">
+              <Image
+                src={"/yogo-logo.jpeg"}
+                alt="YoGo logo"
+                width={120}
+                height={120}
+                className="h-20 w-20 rounded-full border border-white/35 object-cover shadow-md"
+              />
+              <p className="text-sm font-bold sm:text-xl md:2xl">YOGO CARE</p>
+              <p className="text-sm font-sans md:base">Care that stays connected</p>
             </div>
           </section>
 
@@ -85,7 +71,15 @@ export default async function Home({ searchParams }: SearchParamProps) {
             </div>
 
             <footer className="border-t border-slate-200/90 pt-3 text-xs text-slate-500 sm:text-sm flex items-center justify-center">
-              © 2026 YoGo Healthcare
+
+              <p className="text-xs text-muted font-thin">© 2026 YoGo Healthcare</p>
+
+              <Link
+                href={"/?isAdmin=true"}
+                className="absolute right-5 top-6 rounded-xl bg-white/20 px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/30 sm:right-7 sm:top-8"
+              >
+                Admin
+              </Link>
             </footer>
           </section>
         </div>

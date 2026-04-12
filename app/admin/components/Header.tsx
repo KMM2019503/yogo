@@ -14,12 +14,12 @@ const Header = () => {
             height={1000}
             className="h-8 w-fit rounded-full cursor-pointer"
           />
-          <h2 className="font-mono text-2xl font-bold hidden md:block text-dark-700">
+          <h2 className="font-sans text-2xl font-bold hidden md:block text-dark-700">
             YoGo
           </h2>
         </div>
 
-        <p className="text-dark-700 font-mono text-lg">Admin Dashboard</p>
+        <p className="text-dark-700 font-sans text-lg">Admin Dashboard</p>
       </div>
     </header>
   );

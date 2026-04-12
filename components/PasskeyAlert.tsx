@@ -63,7 +63,7 @@ export function PasskeyAlert() {
       <AlertDialogContent className="bg-dark-200">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex justify-between items-center">
-            <p className="font-mono font-bold text-xl">Admin Verification</p>
+            <p className="font-sans font-bold text-xl">Admin Verification</p>
             <CgClose className="cursor-pointer size-5" onClick={onClose} />
           </AlertDialogTitle>
           <AlertDialogDescription>
