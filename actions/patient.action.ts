@@ -19,10 +19,20 @@ export const createUser = async (user: CreateUserParams) => {
   } catch (error: any) {
     console.log("🚀 ~ createUser ~ error:", error);
     if (error && error?.code === 409) {
-      const documents = await users.list([
+      const existingUsersByEmail = await users.list([
         sdk.Query.equal("email", [user.email]),
       ]);
-      return documents?.users[0];
+
+      const existingUserByEmail = existingUsersByEmail.users[0];
+      if (existingUserByEmail) {
+        return parseStringify(existingUserByEmail);
+      }
+
+      const existingUsersByPhone = await users.list([
+        sdk.Query.equal("phone", [user.phone]),
+      ]);
+
+      return parseStringify(existingUsersByPhone.users[0] ?? null);
     }
   }
 };

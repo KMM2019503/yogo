@@ -6,94 +6,53 @@ import Link from "next/link";
 export default async function Home({ searchParams }: SearchParamProps) {
   const resolvedSearchParams = await searchParams;
   const isAdmin = resolvedSearchParams.isAdmin === "true";
-  const trustSignals = [
-    {
-      title: "Privacy First",
-      description: "Your personal details stay protected at every step.",
-    },
-    {
-      title: "Accurate Booking",
-      description: "Manage your upcoming appointments with clear updates.",
-    },
-    {
-      title: "Always Available",
-      description: "Access your care details anytime from one secure place.",
-    },
-  ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(186,230,253,0.6),_rgba(248,250,252,1)_45%,_rgba(226,232,240,0.95)_100%)]">
+    <main className="relative h-[100svh] overflow-hidden bg-slate-200 md:h-[100dvh]">
       {isAdmin && <PasskeyAlert />}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-cyan-200/45 blur-3xl" />
-        <div className="absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-300/35 blur-3xl" />
-      </div>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(6,182,212,0.5),_rgba(165,243,252,0.82)_42%,_rgba(224,242,254,1)_80%)]" />
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center px-4 py-8 sm:px-8">
-        <div className="w-full rounded-[2rem] border border-slate-200/70 bg-white/95 shadow-[0_35px_90px_-40px_rgba(14,116,144,0.55)] backdrop-blur">
-          <div className="grid gap-10 p-6 sm:p-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-            <div className="space-y-7">
+      <div className="relative mx-auto h-full w-full max-w-[540px] md:px-4 md:py-5">
+        <div className="flex h-full flex-col md:overflow-hidden md:rounded-[36px] md:border md:border-slate-300/70 md:bg-white/20 md:shadow-[0_26px_70px_-40px_rgba(2,132,199,0.55)]">
+          <section className="relative shrink-0 overflow-hidden px-5 pb-16 pt-6 sm:px-7 sm:pb-20 sm:pt-8">
+            <div className="relative z-10 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <Image
                   src={"/yogo-logo.jpeg"}
                   alt="YoGo logo"
                   width={88}
                   height={88}
-                  className="h-14 w-14 rounded-full border border-sky-100 object-cover shadow-sm"
+                  className="h-12 w-12 rounded-full border border-white/35 object-cover shadow-sm"
                 />
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-700">
-                    YoGo Health
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] sm:text-sm">
+                    Yogo Health
                   </p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-xs sm:text-sm">
                     Care that stays connected
                   </p>
                 </div>
               </div>
-
-              <div className="space-y-3">
-                <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-                  Trusted access to your healthcare appointments
-                </h1>
-                <p className="max-w-lg text-sm leading-6 text-slate-600 sm:text-base">
-                  Sign in with your contact details to schedule visits, update
-                  records, and stay connected with your care team.
-                </p>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-3">
-                {trustSignals.map((signal) => (
-                  <div
-                    key={signal.title}
-                    className="rounded-xl border border-slate-200 bg-slate-50/80 p-4"
-                  >
-                    <p className="text-sm font-semibold text-slate-900">
-                      {signal.title}
-                    </p>
-                    <p className="mt-2 text-xs leading-5 text-slate-600">
-                      {signal.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <Link
+                href={"/?isAdmin=true"}
+                className="rounded-xl bg-white/20 px-3 py-2 text-sm font-semibold transition-colors hover:bg-white/30"
+              >
+                Admin
+              </Link>
             </div>
+          </section>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/90 p-5 shadow-sm sm:p-8">
+          <section className="relative -mt-9 mt-auto flex max-h-[68svh] shrink-0 flex-col rounded-t-[34px] border border-slate-100 bg-[#f8fafc] px-5 pb-4 pt-6 shadow-[0_-18px_45px_-35px_rgba(2,6,23,0.55)] sm:max-h-[72svh] sm:px-7 sm:pt-7 md:max-h-[72dvh]">
+            <div className="overflow-y-auto pb-3 pr-1">
               <PatientForm />
             </div>
-          </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-6 py-4 text-sm text-slate-500 sm:px-10">
-            <p>© 2026 YoGo Healthcare</p>
-            <Link
-              href={"/?isAdmin=true"}
-              className="font-medium text-sky-700 transition-colors hover:text-sky-800"
-            >
-              Admin
-            </Link>
-          </div>
+            <footer className="border-t border-slate-200/90 pt-3 text-xs text-slate-500 sm:text-sm flex items-center justify-center">
+              © 2026 YoGo Healthcare
+            </footer>
+          </section>
         </div>
-      </section>
-    </div>
+      </div>
+    </main>
   );
 }

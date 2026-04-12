@@ -25,7 +25,7 @@ const RequestSuccess = async ({
   }
 
   return (
-    <div className=" flex h-screen max-h-screen px-[5%]">
+    <div className="min-h-screen bg-slate-50/40 px-4 py-6 sm:px-6 sm:py-8">
       <div className="success-img">
         <Link href="/">
           <Image
@@ -33,47 +33,55 @@ const RequestSuccess = async ({
             height={1000}
             width={1000}
             alt="logo"
-            className="h-10 rounded-full w-fit"
+            className="h-11 w-fit rounded-full"
           />
         </Link>
 
-        <section className="flex flex-col items-center">
+        <section className="flex flex-col items-center gap-2 text-center">
           <Image
             src="/gif/successful.gif"
             height={100}
             width={100}
             alt="success"
           />
-          <h2 className="text-xl mb-6 max-w-[600px] text-center">
+          <h2 className="mb-3 max-w-[600px] text-xl text-slate-800">
             The request you made for an appointment has been submitted
             successfully.
           </h2>
-          <p>We&apos;ll get in contact to confirm soon.</p>
+          <p className="text-sm text-slate-600 sm:text-base">
+            We&apos;ll get in contact to confirm soon.
+          </p>
         </section>
 
         <section className="request-details">
-          <p>Requested appointment details: </p>
-          <div className="flex items-center gap-3">
+          <p className="text-sm font-medium text-slate-700 sm:text-base">
+            Requested appointment details:
+          </p>
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <p className="whitespace-nowrap">Dr. {appointment.doctor}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <FaCalendarCheck className="text-green-400 size-6" />
             <p> {formatDateTime(appointment.schedule).dateTime}</p>
           </div>
         </section>
 
-        <div className="flex flex-col gap-y-5 md:flex-row gap-x-4">
-          <Button variant="outline" asChild>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
+          <Button variant="outline" className="w-full sm:w-auto" asChild>
             <Link href={`/patients/${userId}/dashboard`}>Dashboard</Link>
           </Button>
-          <Button variant="outline" className="shad-primary-btn" asChild>
+          <Button
+            variant="outline"
+            className="shad-primary-btn w-full sm:w-auto"
+            asChild
+          >
             <Link href={`/patients/${userId}/new-appointment`}>
               New Appointment
             </Link>
           </Button>
         </div>
 
-        <p className="copyright">© 2024 YoGo </p>
+        <p className="copyright">© 2026 YoGo</p>
       </div>
     </div>
   );

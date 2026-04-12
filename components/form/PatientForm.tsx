@@ -47,6 +47,10 @@ const PatientForm = () => {
     },
   });
 
+  const routeToDashboard = (userId: string) => {
+    router.push(`/patients/${userId}/dashboard`);
+  };
+
   const routeToRegister = (userId: string) => {
     router.push(`/patients/${userId}/register`);
   };
@@ -61,7 +65,7 @@ const PatientForm = () => {
       const user = await getUserByPhone(normalizedPhone);
 
       if (user) {
-        router.push(`/patients/${user.$id}/new-appointment`);
+        routeToDashboard(user.$id);
         return;
       }
 
@@ -86,7 +90,19 @@ const PatientForm = () => {
     setLoading(true);
 
     try {
-      const user = await createUser({ name, email, phone });
+      const normalizedPhone = phone.trim();
+      const existingUser = await getUserByPhone(normalizedPhone);
+
+      if (existingUser) {
+        routeToDashboard(existingUser.$id);
+        return;
+      }
+
+      const user = await createUser({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: normalizedPhone,
+      });
 
       if (!user) {
         newUserForm.setError("email", {
@@ -96,7 +112,7 @@ const PatientForm = () => {
         return;
       }
 
-      const normalizedInputPhone = phone.trim();
+      const normalizedInputPhone = normalizedPhone;
       const normalizedUserPhone = (user.phone ?? "").trim();
 
       if (normalizedInputPhone !== normalizedUserPhone) {
@@ -127,7 +143,7 @@ const PatientForm = () => {
       <Form {...lookupForm}>
         <form
           onSubmit={lookupForm.handleSubmit(onLookupSubmit)}
-          className="flex-1 space-y-5"
+          className="w-full space-y-5"
         >
           <section className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
@@ -187,7 +203,7 @@ const PatientForm = () => {
     <Form {...newUserForm}>
       <form
         onSubmit={newUserForm.handleSubmit(onNewUserSubmit)}
-        className="flex-1 space-y-5"
+        className="w-full space-y-5"
       >
         <section className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">

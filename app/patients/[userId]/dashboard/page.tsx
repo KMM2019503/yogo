@@ -1,10 +1,10 @@
 import React from "react";
 import Header from "./components/Header";
-import { getUser } from "@/actions/patient.action";
+import { getPatient, getUser } from "@/actions/patient.action";
 import { getAppointmentsByUserId } from "@/actions/appointment.action";
 import { Appointment } from "@/types/appwrite.types";
-import AppointmentCard from "./components/AppointmentCard";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import DashboardClient from "./components/DashboardClient";
 
 export const revalidate = 0;
 
@@ -14,8 +14,9 @@ const PatientDashboard = async ({
   params: Promise<{ userId: string }>;
 }) => {
   const { userId } = await params;
-  const [user, appointmentData] = await Promise.all([
+  const [user, patient, appointmentData] = await Promise.all([
     getUser(userId),
+    getPatient(userId),
     getAppointmentsByUserId(userId),
   ]);
 
@@ -23,20 +24,24 @@ const PatientDashboard = async ({
     notFound();
   }
 
+  const appointments = appointmentData.documents as Appointment[];
+  const hasAppointments = appointments.length > 0;
+  const hasPatientProfile = Boolean(patient);
+
+  if (!hasPatientProfile && !hasAppointments) {
+    redirect(`/patients/${userId}/register`);
+  }
+
   return (
-    <div className="max-h-screen">
+    <div className="min-h-screen bg-slate-50/50">
       <Header user={user} />
-      <div className="px-[7%] md:px-[6%] pt-[2%] ">
-        {/* Overview */}
-        {/* Appointment Card */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-3 md:gap-x-4 lg:gap-x-3">
-          {appointmentData.documents.map((item: Appointment) => (
-            <div key={item.$id}>
-              <AppointmentCard appointment={item} />
-            </div>
-          ))}
-        </div>
-      </div>
+      <main className="mx-auto w-full max-w-3xl px-4 py-4 sm:px-6 sm:py-6">
+        <DashboardClient
+          userId={userId}
+          appointments={appointments}
+          hasPatientProfile={hasPatientProfile}
+        />
+      </main>
     </div>
   );
 };

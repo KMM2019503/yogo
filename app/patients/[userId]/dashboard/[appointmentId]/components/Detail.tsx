@@ -2,40 +2,61 @@ import { Separator } from "@/components/ui/separator";
 import { formatDateTime } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 import React from "react";
+import { getStatusBadgeClassName, statusLabelByValue } from "../../components/status";
 
 interface DetailProps {
   appointment: Appointment;
 }
 
 const Detail = ({ appointment }: DetailProps) => {
+  const patientName =
+    typeof appointment.patient === "string"
+      ? "Patient"
+      : appointment.patient?.name ?? "Patient";
+
   return (
-    <div className="w-full border py-3 px-4 rounded-lg mt-3">
-      <h4 className="text-lg ">Appointment Detail</h4>
-      <Separator className="my-2" />
-      <div className="flex flex-col md:flex-row justify-around">
-        <div>
+    <div className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+      <h4 className="text-base font-semibold text-slate-800 sm:text-lg">
+        Appointment Detail
+      </h4>
+      <Separator className="my-3" />
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="space-y-1 text-sm text-slate-700 sm:text-base">
           <p className="font-mono">
             {formatDateTime(appointment?.schedule).dateTime}
           </p>
-          <p className="font-mono">Reason : {appointment?.reason}</p>
+          <p className="font-mono">Reason: {appointment?.reason}</p>
           {appointment?.note && (
-            <p className="font-mono">Note : {appointment?.note}</p>
+            <p className="font-mono">Note: {appointment?.note}</p>
           )}
         </div>
 
-        <Separator orientation="vertical" />
+        <Separator className="md:hidden" />
+        <Separator orientation="vertical" className="hidden h-auto md:block" />
 
-        <div>
-          <p className="font-mono">Doctor {appointment?.doctor}</p>
-          <p className="font-mono">Patient : {appointment?.patient?.name}</p>
-          <p className="font-mono">{appointment?.status}</p>
+        <div className="space-y-1 text-sm text-slate-700 sm:text-base">
+          <p className="font-mono">Doctor: {appointment?.doctor}</p>
+          <p className="font-mono">Patient: {patientName}</p>
+          <p>
+            <span className={getStatusBadgeClassName(appointment.status)}>
+              {statusLabelByValue[appointment.status]}
+            </span>
+          </p>
         </div>
       </div>
-      <Separator className="my-2" />
-      <div className="md:mx-4">
-        {appointment?.cancellationReason && <p>Cancellation Reason</p>}
-        <p>{appointment?.cancellationReason}</p>
-      </div>
+      {appointment?.cancellationReason && (
+        <>
+          <Separator className="my-3" />
+          <div className="space-y-1 md:mx-2">
+            <p className="text-sm font-semibold text-slate-700">
+              Cancellation Reason
+            </p>
+            <p className="text-sm text-slate-600 sm:text-base">
+              {appointment.cancellationReason}
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 };

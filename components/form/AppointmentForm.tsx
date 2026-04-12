@@ -40,7 +40,7 @@ import {
 } from "@/actions/appointment.action";
 import { Appointment } from "@/types/appwrite.types";
 import toast from "react-hot-toast";
-import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 interface AppointmentFormProps {
   userId: string;
@@ -59,6 +59,7 @@ const AppointmentForm = ({
 }: AppointmentFormProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const isCreate = type === "create";
 
   const AppointmentFormValidation = getAppointmentSchema(type);
 
@@ -161,45 +162,63 @@ const AppointmentForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-y-2 flex-1"
+        className={cn(
+          "flex flex-1 flex-col gap-y-2",
+          isCreate && "w-full space-y-5 gap-y-0"
+        )}
       >
         {type === "schedule" && (
-          <>
-            <section className="space-y-4">
-              <p className="text-dark-700">
-                Are you sure want to comfirm this appointment?
-              </p>
-            </section>
-          </>
+          <section className="space-y-4">
+            <p className="text-dark-700">
+              Are you sure want to comfirm this appointment?
+            </p>
+          </section>
         )}
         {type !== "cancel" && (
           <>
-            {type === "create" && (
-              <>
-                <section className="space-y-4">
-                  <p className="text-dark-700">
-                    Request your first appointment in 10s
-                  </p>
-                </section>
-              </>
+            {isCreate && (
+              <section className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
+                  Appointment Request
+                </p>
+                <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                  Book your visit
+                </h2>
+                <p className="text-sm leading-6 text-slate-600">
+                  Select a doctor and preferred schedule so we can review and
+                  confirm your appointment quickly.
+                </p>
+              </section>
             )}
             <FormField
               control={form.control}
               name="doctor"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Doctor</FormLabel>
+                <FormItem className={cn(isCreate && "space-y-2")}>
+                  <FormLabel
+                    className={cn(
+                      isCreate && "text-sm font-medium text-slate-700"
+                    )}
+                  >
+                    Doctor
+                  </FormLabel>
                   <FormMessage />
                   <FormControl>
                     <Select
-                      disabled={type !== "create"}
+                      disabled={!isCreate}
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger className="w-full ">
+                      <SelectTrigger
+                        className={cn(
+                          "w-full",
+                          isCreate &&
+                            "h-11 rounded-xl border-slate-300 bg-white text-slate-900 focus:ring-sky-500 focus:ring-offset-0"
+                        )}
+                      >
                         <SelectValue placeholder="Select a doctor" />
                       </SelectTrigger>
-                      <SelectContent className="bg-dark-300 ">
+                      <SelectContent>
                         <SelectGroup>
                           {Doctors.map((item, i) => (
                             <SelectItem key={i} value={item.name}>
@@ -215,15 +234,26 @@ const AppointmentForm = ({
             />
 
             <FormField
-              disabled={type !== "create"}
+              disabled={!isCreate}
               control={form.control}
               name="reason"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="reason">Reason</FormLabel>
+                <FormItem className={cn(isCreate && "space-y-2")}>
+                  <FormLabel
+                    htmlFor="reason"
+                    className={cn(
+                      isCreate && "text-sm font-medium text-slate-700"
+                    )}
+                  >
+                    Reason
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
+                      className={cn(
+                        isCreate &&
+                          "min-h-[104px] rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-sky-500 focus-visible:ring-offset-0"
+                      )}
                       placeholder="Eg : anual health checkup, blood test, general checkup"
                       id="reason"
                     />
@@ -234,15 +264,26 @@ const AppointmentForm = ({
             />
 
             <FormField
-              disabled={type !== "create"}
+              disabled={!isCreate}
               control={form.control}
               name="note"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="notes">Notes</FormLabel>
+                <FormItem className={cn(isCreate && "space-y-2")}>
+                  <FormLabel
+                    htmlFor="notes"
+                    className={cn(
+                      isCreate && "text-sm font-medium text-slate-700"
+                    )}
+                  >
+                    Notes
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
+                      className={cn(
+                        isCreate &&
+                          "min-h-[104px] rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-sky-500 focus-visible:ring-offset-0"
+                      )}
                       placeholder="Eg : I don't live here, but I need help with my medication"
                       id="notes"
                     />
@@ -256,12 +297,22 @@ const AppointmentForm = ({
               control={form.control}
               name="schedule"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-y-2">
-                  <FormLabel>Appointment Date & Time</FormLabel>
+                <FormItem className={cn("flex flex-col gap-y-2", isCreate && "space-y-2")}>
+                  <FormLabel
+                    className={cn(
+                      isCreate && "text-sm font-medium text-slate-700"
+                    )}
+                  >
+                    Appointment Date & Time
+                  </FormLabel>
                   <FormControl>
                     <DatePicker
-                      disabled={type !== "create"}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={!isCreate}
+                      className={cn(
+                        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                        isCreate &&
+                          "h-11 rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-sky-500 focus-visible:ring-offset-0"
+                      )}
                       selected={field.value}
                       onChange={(date) => {
                         field.onChange(date);
@@ -306,13 +357,14 @@ const AppointmentForm = ({
 
         <SubmitButton
           isLoading={loading}
-          className={`${
-            type === "create"
-              ? " bg-yogo-dark"
+          className={cn(
+            "mt-2",
+            isCreate
+              ? "h-11 w-full rounded-xl bg-sky-700 text-white shadow-sm transition-colors hover:bg-sky-800 focus-visible:ring-sky-500"
               : type === "schedule"
               ? "bg-green-500"
               : "bg-red-700"
-          } mt-2`}
+          )}
         >
           {buttonText}
         </SubmitButton>

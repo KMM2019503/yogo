@@ -28,9 +28,7 @@ export const PatientFormDefaultValues = {
 
 export const GenderType = [
   { value: "male", label: "Male", icon: CgGenderMale },
-  { value: "female", label: "Female", icon: CgGenderFemale },
-  { value: "other", label: "Other", icon: TbGenderAgender },
-  { value: "gay", label: "Gay", icon: BsGenderAmbiguous },
+  { value: "female", label: "Female", icon: CgGenderFemale }
 ];
 
 export const IdentificationTypes = [
