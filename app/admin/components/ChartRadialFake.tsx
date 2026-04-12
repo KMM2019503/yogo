@@ -71,7 +71,7 @@ export function ChartAreaInteractive() {
   })
 
   return (
-    <Card className="pt-0">
+    <Card className="border-slate-200 bg-white pt-0 shadow-sm">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
           <CardTitle>Patient Volume Trend</CardTitle>
